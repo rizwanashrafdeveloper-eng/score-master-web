@@ -1,4 +1,3 @@
-
 // // import 'package:flutter/material.dart';
 // // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // // import 'package:get/get_state_manager/get_state_manager.dart';
@@ -13,7 +12,6 @@
 // //     required this.tabs,
 // //   });
 
- 
 // //   final StageController controller;
 // //   double _getTabWidth(int index) {
 // //     switch (index) {
@@ -32,7 +30,6 @@
 // //         return 267.w; // Phases
 // //         }
 // //   }
-
 
 // //   @override
 // //   Widget build(BuildContext context) {
@@ -64,7 +61,7 @@
 
 // //       return Stack(
 // //           children: [
-            
+
 // //             AnimatedPositioned(
 // //               duration: Duration(milliseconds: 250),
 // //               curve: Curves.easeInOut,
@@ -74,15 +71,14 @@
 // //               top: 5.5,
 // //               child: Container(
 // //                         height: 42,
-// //               //  width: tabWidth - 8, 
+// //               //  width: tabWidth - 8,
 // //                         decoration: BoxDecoration(
 // //             color: AppColors.forwardColor,
 // //             borderRadius: BorderRadius.circular(12),
 // //                         ),
 // //               ),
 // //             ),
-                        
-            
+
 // //             Row(
 // //               children: List.generate(tabs.length, (index) {
 // //                         return SizedBox(
@@ -156,7 +152,7 @@
 //         child: LayoutBuilder(
 //           builder: (context, constraints) {
 //             final double totalWidth = constraints.maxWidth;
-      
+
 //             // Agar 2 tabs se zyada hain to spacing calculate karega warna 0
 //             final double spacing = tabs.length > 1
 //                 ? (totalWidth -
@@ -164,13 +160,13 @@
 //                             .reduce((a, b) => a + b)) /
 //                     (tabs.length - 1)
 //                 : 0;
-      
+
 //             // Calculate left position based on selectedIndex
 //             double leftPosition = 0;
 //             for (int i = 0; i < selectedIndex; i++) {
 //               leftPosition += _getTabWidth(i) + spacing;
 //             }
-      
+
 //             return Stack(
 //               children: [
 //                 /// Highlight bar
@@ -192,7 +188,7 @@
 //                     ),
 //                   ),
 //                 ),
-      
+
 //                 /// Tabs
 //                 Row(
 //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -275,9 +271,11 @@ class ViewResponseStackContainer extends StatelessWidget {
 
             final double spacing = tabs.length > 1
                 ? (totalWidth -
-                        List.generate(tabs.length, (i) => _getTabWidth(i))
-                            .reduce((a, b) => a + b)) /
-                    (tabs.length - 1)
+                          List.generate(
+                            tabs.length,
+                            (i) => _getTabWidth(i),
+                          ).reduce((a, b) => a + b)) /
+                      (tabs.length - 1)
                 : 0;
 
             double leftPosition = 0;

@@ -12,9 +12,17 @@ class AccountInfoClumn extends StatelessWidget {
   const AccountInfoClumn({
     super.key,
     this.text,
+    this.email,
+    this.phone,
+    this.joinDate,
+    //this.levelText,
   });
 
   final String? text;
+  final String? email;
+  final String? phone;
+  final String? joinDate;
+  //final String? levelText;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +38,7 @@ class AccountInfoClumn extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Container(
             height: 250.h,
-      width: double.infinity,
+            width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24.r),
               border: Border.all(color: AppColors.greyColor, width: 1.5.w),
@@ -51,7 +59,7 @@ class AccountInfoClumn extends StatelessWidget {
                         ),
                       ),
                       BoldText(
-                        text: "john.smith@company.com",
+                        text: email ?? "N/A",
                         fontSize: ResponsiveFont.getFontSizeCustom(
                           defaultSize: 24.sp,
                           smallSize: 12.sp,
@@ -72,7 +80,7 @@ class AccountInfoClumn extends StatelessWidget {
                         ),
                       ),
                       BoldText(
-                        text: "+1 (555) 987-6543",
+                        text: phone ?? "N/A",
                         fontSize: ResponsiveFont.getFontSizeCustom(
                           defaultSize: 24.sp,
                           smallSize: 12.sp,
@@ -81,7 +89,7 @@ class AccountInfoClumn extends StatelessWidget {
                       ),
                     ],
                   ),
-                 SizedBox(height: 20.h),
+                  SizedBox(height: 20.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -93,7 +101,7 @@ class AccountInfoClumn extends StatelessWidget {
                         ),
                       ),
                       BoldText(
-                        text: "September 8, 2024",
+                        text: joinDate ?? "N/A",
                         fontSize: ResponsiveFont.getFontSizeCustom(
                           defaultSize: 24.sp,
                           smallSize: 12.sp,
@@ -102,29 +110,29 @@ class AccountInfoClumn extends StatelessWidget {
                       ),
                     ],
                   ),
-                 SizedBox(height: 20.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      MainText(
-                        text: text ?? "Facilitator Level",
-                        fontSize: ResponsiveFont.getFontSizeCustom(
-                          defaultSize: 24.sp,
-                          smallSize: 12.sp,
-                        ),
-                      ),
-                      CreateContainer(
-                        width: 130.w,
-                        height: 60.h,
-                        borderW: 2.w,
-                        arrowW: 25.w,
-                        arrowh: 30.h,
-                        text: "Level 3",
-                        top: 8.h,
-                        right: -30.w,
-                      ),
-                    ],
-                  ),
+
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     MainText(
+                  //       text: text ?? "Facilitator Level",
+                  //       fontSize: ResponsiveFont.getFontSizeCustom(
+                  //         defaultSize: 24.sp,
+                  //         smallSize: 12.sp,
+                  //       ),
+                  //     ),
+                  //     CreateContainer(
+                  //       width: 130.w,
+                  //       height: 60.h,
+                  //       borderW: 2.w,
+                  //       arrowW: 25.w,
+                  //       arrowh: 30.h,
+                  //       text: levelText ?? "Level 3",
+                  //       top: 8.h,
+                  //       right: -30.w,
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

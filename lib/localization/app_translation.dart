@@ -4,6 +4,11 @@ class AppTranslations extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': {
+      "add_facilitators":"Add Facilitators",
+          "search_facilitator":"Search Facilitator",
+          "total_game_time_minutes":"Total Game Time Minutes",
+          "enter_total_time":"Enter Total Time",
+          "no_facilitators_selected":"No Facilitator Selected",
            "live_updates": "Live Updates...",
   "overall": "Overall",
   "players": "Players",

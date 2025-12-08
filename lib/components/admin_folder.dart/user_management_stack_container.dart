@@ -107,7 +107,7 @@ class UserManagementStackContainer extends StatelessWidget {
   final double left;
   final double tabWidth;
   final List<String> tabs;
-  final UserManagmentController controller;
+  final UserManagementController controller;
 
   // Define consistent padding for the animated selector
   static const double horizontalPadding = 4.0; // 4.w on left, 4.w on right

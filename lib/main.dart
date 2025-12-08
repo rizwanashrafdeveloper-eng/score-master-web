@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -47,8 +45,30 @@ import 'package:scorer_web/view/start_Screen3.dart';
 import 'package:scorer_web/view/start_screen2.dart';
 import 'package:scorer_web/widgets/widget_nav_item.dart';
 
+// Import your controllers
+import 'package:scorer_web/api/api_controllers/session_controller.dart';
+import 'package:scorer_web/api/api_controllers/join_session_controller.dart';
+import 'package:scorer_web/api/api_controllers/session_list_controller.dart';
+import 'package:get/get_instance/src/bindings_interface.dart';
+import 'package:get/get.dart';
+
+import 'api/api_controllers/login_controller_web.dart';
+
+class InitialBinding implements Bindings {
+  @override
+  void dependencies() {
+    // Initialize all your controllers here
+    Get.lazyPut(() => LoginControllerWeb(), fenix: true);
+    Get.lazyPut(() => SessionController(), fenix: true);
+    Get.lazyPut(() => JoinSessionController(), fenix: true);
+    Get.lazyPut(() => SessionsListController(), fenix: true);
+    // Add other controllers as needed
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final savedLocale = await TranslationService().getSavedLocale();
   runApp(MyApp(locale: savedLocale));
 }
@@ -60,21 +80,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    print("📱 Screen size: width=${size.width}, height=${size.height}");
     return ScreenUtilInit(
-      designSize: const Size(1920, 1080), // 👈 yahan apni base design ka size do
+      designSize: const Size(1920, 1080),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
         return GetMaterialApp(
-            translations: AppTranslations(),
+          initialBinding: InitialBinding(), // ✅ ADD THIS
+          translations: AppTranslations(),
           locale: locale,
           getPages: AppRoutes.getAppRoutes(),
           fallbackLocale: const Locale('en', 'US'),
           debugShowCheckedModeBanner: false,
-          home: AdminDashboard(),
+          home: SplashScreen(),
         );
       },
-      // child:  AudioVisualizer(),
     );
   }
 }

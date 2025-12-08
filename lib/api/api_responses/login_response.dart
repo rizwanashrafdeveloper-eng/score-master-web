@@ -1,0 +1,59 @@
+class LoginResponse {
+  final String token;
+  final User user;
+  final int? sessionId;
+
+  LoginResponse({
+    required this.token,
+    required this.user,
+    this.sessionId,
+  });
+
+  factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    return LoginResponse(
+      token: json['token'],
+      user: User.fromJson(json['user']),
+      sessionId: json['sessionId'],
+    );
+  }
+}
+class User {
+  final int id;
+  final String name;
+  final String email;
+  final String language;
+  final String phone;
+  final String role;
+  final int? facilitatorId;
+
+  User({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.language,
+    required this.phone,
+    required this.role,
+    this.facilitatorId,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      language: json['language'] ?? 'en',
+      phone: json['phone'] ?? '',
+      role: json['role'],
+      facilitatorId: json['facilitatorId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "email": email,
+    "language": language,
+    "phone": phone,
+    "role": role,
+    "facilitatorId": facilitatorId,   };
+}

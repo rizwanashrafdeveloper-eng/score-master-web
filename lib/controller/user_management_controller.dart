@@ -1,7 +1,7 @@
 
 import 'package:get/get.dart';
 
-class UserManagmentController extends GetxController {
+class UserManagementController extends GetxController {
   var isCompleted = false.obs; 
 
 

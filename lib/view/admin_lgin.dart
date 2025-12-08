@@ -6,12 +6,15 @@ import 'package:scorer_web/components/responsive_fonts.dart';
 import 'package:scorer_web/constants/appcolors.dart';
 import 'package:scorer_web/constants/appimages.dart';
 import 'package:scorer_web/constants/route_name.dart';
+import 'package:scorer_web/validator.dart';
 import 'package:scorer_web/view/gradient_background.dart';
 import 'package:scorer_web/widgets/create_container.dart';
 import 'package:scorer_web/widgets/forward_button_container.dart';
 import 'package:scorer_web/widgets/login_button.dart';
 import 'package:scorer_web/widgets/login_textfield.dart';
 import 'package:scorer_web/widgets/main_text.dart';
+
+import '../api/api_controllers/login_controller_web.dart';
 
 class AdminLgin extends StatefulWidget {
   const AdminLgin({super.key});
@@ -21,6 +24,8 @@ class AdminLgin extends StatefulWidget {
 }
 
 class _AdminLginState extends State<AdminLgin> with TickerProviderStateMixin {
+  final LoginControllerWeb loginController = Get.put(LoginControllerWeb());
+
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late AnimationController _formController;
@@ -66,7 +71,6 @@ class _AdminLginState extends State<AdminLgin> with TickerProviderStateMixin {
       CurvedAnimation(parent: _formController, curve: Curves.easeOut),
     );
 
-    // Start form animation after image completes
     _slideController.forward().then((_) => _formController.forward());
   }
 
@@ -148,47 +152,81 @@ class _AdminLginState extends State<AdminLgin> with TickerProviderStateMixin {
                                   horizontal: 32.w, vertical: 32.h),
                               child: Column(
                                 children: [
-                                  LoginTextfield(text: "enter_full_name".tr),
                                   SizedBox(height: 9.h),
-                                  LoginTextfield(text: "enter_email".tr),
+                                  LoginTextfield(
+                                    controller:
+                                    loginController.emailController,
+                                    text: "enter_email".tr,
+                                    validator: Validators.email,
+                                  ),
                                   SizedBox(height: 9.h),
-                                  LoginTextfield(text: "enter_password".tr),
+                                  LoginTextfield(
+                                    controller:
+                                    loginController.passwordController,
+                                    text: "enter_password".tr,
+                                    validator: Validators.password,
+                                    isPassword: true,
+
+                                  ),
+
                                   SizedBox(height: 20.h),
+
+                                  /// ✅ Remember me + forgot password
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 37.h,
-                                            width: 37.w,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: AppColors.rememberColor,
-                                                width: 1.w,
+                                      Obx(() => GestureDetector(
+                                        onTap: () {
+                                          loginController.rememberMe.value =
+                                          !loginController
+                                              .rememberMe.value;
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              height: 37.h,
+                                              width: 37.w,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: AppColors
+                                                      .rememberColor,
+                                                  width: 1.w,
+                                                ),
+                                                color: loginController
+                                                    .rememberMe.value
+                                                    ? AppColors
+                                                    .selectLangugaeColor
+                                                    : Colors.transparent,
                                               ),
+                                              child: loginController
+                                                  .rememberMe.value
+                                                  ? const Icon(Icons.check,
+                                                  size: 20,
+                                                  color: Colors.white)
+                                                  : null,
                                             ),
-                                          ),
-                                          SizedBox(width: 6.w),
-                                          MainText(
-                                            text: "remember_me".tr,
-                                            fontSize:
-                                                ResponsiveFont.getFontSizeCustom(
-                                              defaultSize: 18.sp,
-                                              smallSize: 11.sp,
+                                            SizedBox(width: 6.w),
+                                            MainText(
+                                              text: "remember_me".tr,
+                                              fontSize: ResponsiveFont
+                                                  .getFontSizeCustom(
+                                                defaultSize: 18.sp,
+                                                smallSize: 11.sp,
+                                              ),
+                                              color: AppColors
+                                                  .languageTextColor,
                                             ),
-                                            color:
-                                                AppColors.languageTextColor,
-                                          ),
-                                        ],
-                                      ),
+                                          ],
+                                        ),
+                                      )),
+
                                       MainText(
                                         text: "forget_password".tr,
                                         fontFamily: "gotham",
                                         fontSize:
-                                            ResponsiveFont.getFontSizeCustom(
+                                        ResponsiveFont.getFontSizeCustom(
                                           defaultSize: 20.sp,
                                           smallSize: 11.sp,
                                         ),
@@ -196,14 +234,23 @@ class _AdminLginState extends State<AdminLgin> with TickerProviderStateMixin {
                                       ),
                                     ],
                                   ),
+
                                   SizedBox(height: 49.h),
-                                  LoginButton(
-                                    text: "login".tr,
+
+                                  /// ✅ Login button with loader + role check
+                                  Obx(() => LoginButton(
+                                    text: loginController.isLoading.value
+                                        ? "Logging in..."
+                                        : "login".tr,
                                     fontSize: 20,
-                                    onTap: () {
-                                      Get.toNamed(RouteName.adminDashboard);
+                                    onTap: loginController.isLoading.value
+                                        ? null
+                                        : () async {
+                                      await loginController.login(
+                                        expectedRole: 'admin',
+                                      );
                                     },
-                                ),
+                                  )),
                                 ],
                               ),
                             ),

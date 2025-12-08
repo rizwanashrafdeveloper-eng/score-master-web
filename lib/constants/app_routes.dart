@@ -1,4 +1,3 @@
-
 import 'package:get/get.dart';
 import 'package:scorer_web/components/admin_folder.dart/admin_over_view_Screen.dart';
 import 'package:scorer_web/constants/route_name.dart';
@@ -38,103 +37,154 @@ import 'package:scorer_web/view/start_Screen3.dart';
 import 'package:scorer_web/view/start_screen2.dart';
 
 class AppRoutes {
+  static getAppRoutes() => [
+    GetPage(
+      name: RouteName.splashScreen,
+      page: () => SplashScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.startScreen,
+      page: () => StartScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.startScreen1,
+      page: () => StartScreen1(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.adminLoginScreen,
+      page: () => AdminLgin(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.chooseYourRoleScreen,
+      page: () => ChooseYpurRoleScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.createNewSessionScreen,
+      page: () => CreateNewSessionScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.endSessionScreen,
+      page: () => EndSessionScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.evaluateResponseScreen,
+      page: () => EvaluateResponseScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.evaluateResponseScreen2,
+      page: () => EvauateResponseScreen2(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.facilLoginScreen,
+      page: () => FacilLoginScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.facilitatorDashboard,
+      page: () => FacilitatorDashboard(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.overViewOptionScreen,
+      page: () => OverViewOptionScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.playerLoginScreen,
+      page: () => PlayerLoginScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.startScreen2,
+      page: () => StartScreen2(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.startScreen3,
+      page: () => StartScreen3(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.viewResponsesScreen,
+      page: () => ViewResponseScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.viewScoreScreen,
+      page: () => ViewScoreScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.adminCreateNewSessionScreen,
+      page: () => AdminCreateNewSessionScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.adminDashboard,
+      page: () => AdminDashboard(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.adminOverviewOptionScreens,
+      page: () => AdminOverViewScreen(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.createNewSessionHeader,
+      page: () => CreateNewSessionHeader(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.gameScreenAdminSide,
+      page: () => GameScreenAdminside(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.game2Screen,
+      page: () => Game2ScreenWeb(),
+      transition: Transition.cupertino,
+    ),
 
-static getAppRoutes()=>[
 
-GetPage(name:RouteName.splashScreen, page:()=> SplashScreen(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.startScreen, page:()=> StartScreen(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.startScreen1, page:()=> StartScreen1(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.adminLoginScreen, page:()=> AdminLgin(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.chooseYourRoleScreen, page:()=> ChooseYpurRoleScreen(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.createNewSessionScreen, page:()=> CreateNewSessionScreen(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.endSessionScreen, page:()=> EndSessionScreen(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.evaluateResponseScreen, page:()=> EvaluateResponseScreen(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.evaluateResponseScreen2, page:()=> EvauateResponseScreen2(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.facilLoginScreen, page:()=> FacilLoginScreen(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.facilitatorDashboard, page:()=> FacilitatorDashboard(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.overViewOptionScreen, page:()=> OverViewOptionScreen(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.playerLoginScreen, page:()=> PlayerLoginScreen(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.startScreen2, page:()=> StartScreen2(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.startScreen3, page:()=> StartScreen3(),
-transition: Transition.cupertino
-),GetPage(name:RouteName.viewResponsesScreen, page:()=> ViewResponseScreen(),
-transition: Transition.cupertino
-),
-GetPage(name:RouteName.viewScoreScreen, page:()=> ViewScoreScreen(),
-transition: Transition.cupertino
-),
-GetPage(
-  name: RouteName.adminCreateNewSessionScreen,
-  page: () => AdminCreateNewSessionScreen(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.adminDashboard,
-  page: () => AdminDashboard(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.adminOverviewOptionScreens,
-  page: () => AdminOverViewScreen(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.createNewSessionHeader,
-  page: () => CreateNewSessionHeader(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.gameScreenAdminSide,
-  page: () => GameScreenAdminside(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.game2Screen,
-  page: () => GameScreen2AdminSide(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.userAdminDetailedScree,
-  page: () => AdminDetailedScreen(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.userFacilitateDetailedScree,
-  page: () => UserFacilitateDetailedScree(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.userManagementScreen,
-  page: () => UserManagemnetScreen(),
-  transition: Transition.cupertino,
-),
-GetPage(
-  name: RouteName.userPlayerDetailedScree,
-  page: () => UserPlayerDetailedScreen(),
-  transition: Transition.cupertino,
-),
-GetPage(
+    // In app_routes.dart
+    GetPage(
+      name: RouteName.userAdminDetailedScree,
+      page: () {
+        final arguments = Get.arguments;
+        return AdminDetailedScreen(
+          userId: arguments['userId'],
+          userName: arguments['userName'],
+          userEmail: arguments['userEmail'],
+          userPhone: arguments['userPhone'],
+          joinDate: arguments['joinDate'],
+        );
+      },
+    ),
+    GetPage(
+      name: RouteName.userFacilitateDetailedScree,
+      page: () => UserFacilitateDetailedScree(userId: Get.arguments['userId']), // ✅ Add this
+    ),
+
+    GetPage(
+      name: RouteName.userManagementScreen,
+      page: () => UserManagementScreen(),
+      transition: Transition.cupertino,
+    ),
+
+    GetPage(
+      name: RouteName.userPlayerDetailedScree,
+      page: () => UserPlayerDetailedScreen(userId: Get.arguments['userId']), // ✅ Add this
+    ),
+    GetPage(
       name: RouteName.gameStart1Screen,
       page: () => PlayerGameStartScreen(),
       transition: Transition.cupertino,
@@ -174,8 +224,5 @@ GetPage(
       page: () => ResponseSubmittedScreen2(),
       transition: Transition.cupertino,
     ),
-    
-
-];
-
+  ];
 }

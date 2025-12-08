@@ -1,67 +1,102 @@
+// components/admin_folder.dart/default_time_container.dart
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:get/get.dart';
 import 'package:scorer_web/constants/appcolors.dart';
 import 'package:scorer_web/widgets/bold_text.dart';
-import 'package:scorer_web/widgets/custom_sloder_row.dart';
+import 'package:scorer_web/api/api_controllers/create_game_controller.dart';
 
 class DefaultTimeContainer extends StatelessWidget {
-  const DefaultTimeContainer({super.key});
+  final CreateGameController controller;
+
+  const DefaultTimeContainer({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 236.h,
-      width: double.infinity,
+      width: 600.w,
+      padding: EdgeInsets.all(30.w),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.greyColor, width: 1.7.w),
-        borderRadius: BorderRadius.circular(24.r),
+        border: Border.all(color: AppColors.forwardColor.withOpacity(0.1), width: 2.0),
+        borderRadius: BorderRadius.circular(30.r),
+        color: Colors.grey.shade100.withOpacity(0.5),
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 23.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20.h),
-            BoldText(
-              text: "default_time_limit_per_phase".tr,
-              selectionColor: AppColors.blueColor,
-              fontSize: 30.sp,
-            ),
-            SizedBox(height: 31.h),
-            CustomSloderRow(
-              text: "Phase 1",
-              text2: "easy".tr,
-              value: 15,
-              width: 140.w,
-              fontSize: 20.sp,
-              width1: 10.w,
-            ),
-            SizedBox(height: 10.h),
-            CustomSloderRow(
-              text: "Phase 2",
-              text2: "medium".tr,
-              value: 20,
-              color: AppColors.orangeColor,
-               width: 140.w,
-              fontSize: 20.sp,
-              width1: 10.w,
-            ),
-            // SizedBox(height: 5.h),
-            SizedBox(height: 10.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// --- Header Row ---
+          Row(
+            children: [
+              Icon(Icons.access_time, color: AppColors.blueColor, size: 36.r),
+              SizedBox(width: 16.w),
+              BoldText(
+                text: "total_game_time_minutes".tr,
+                selectionColor: AppColors.blueColor,
+                fontSize: 28.sp,
+              ),
+            ],
+          ),
+          SizedBox(height: 20.h),
 
-            CustomSloderRow(
-              text: "Phase 3",
-              text2: "hard".tr,
-              value: 30,
-              color: AppColors.redColor,
-               width: 140.w,
-              fontSize: 20.sp,
-              width1: 10.w,
+          /// --- Input for total time ---
+          SizedBox(
+            width: 400.w,
+            child: TextField(
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  controller.timeDuration.value = 0;
+                  return;
+                }
+
+                final time = int.tryParse(value);
+                if (time == null) {
+                  Get.snackbar(
+                    "Invalid Input".tr,
+                    "Only numbers are acceptable".tr,
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.redAccent,
+                    colorText: Colors.white,
+                    margin: EdgeInsets.all(16.r),
+                    borderRadius: 8.r,
+                  );
+                  controller.timeDuration.value = 0;
+                } else {
+                  controller.timeDuration.value = time;
+                }
+              },
+              decoration: InputDecoration(
+                hintText: "enter_total_time".tr,
+                prefixIcon: Icon(Icons.timer, color: AppColors.orangeColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 20.h,
+                  horizontal: 16.w,
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 16.h),
+
+          /// --- Selected time text ---
+          Obx(() => Text(
+            "Selected time: ${controller.timeDuration.value} minutes".tr,
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.teamColor,
+            ),
+          )),
+        ],
       ),
     );
   }

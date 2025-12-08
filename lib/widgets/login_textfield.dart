@@ -1,55 +1,94 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:scorer/constants/appcolors.dart';
 import 'package:scorer_web/constants/appcolors.dart';
 
-class LoginTextfield extends StatelessWidget {
+class LoginTextfield extends StatefulWidget {
   final double? fontsize;
   final String text;
   final double? height;
-  final bool ishow;
-  
-  const LoginTextfield({super.key, required this.text, this.fontsize, this.height,  this.ishow=false});
+  final bool isPassword;
+  final bool ishow; // Added ishow parameter
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final Function(String)? onChanged; // Added onChanged parameter
+  final TextInputType? keyboardType; // Added keyboardType parameter
+  final int? maxLines; // Added maxLines for multiline support
+
+  const LoginTextfield({
+    super.key,
+    required this.text,
+    this.fontsize,
+    this.height,
+    this.isPassword = false,
+    this.ishow = true, // Default value for ishow
+    this.controller,
+    this.validator,
+    this.onChanged,
+    this.keyboardType,
+    this.maxLines = 1,
+  });
+
+  @override
+  State<LoginTextfield> createState() => _LoginTextfieldState();
+}
+
+class _LoginTextfieldState extends State<LoginTextfield> {
+  bool _obscureText = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.isPassword;
+  }
 
   @override
   Widget build(BuildContext context) {
-    
- 
     return Container(
-      height:height?? 74 .h,
+      height: widget.height ?? 74.h,
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26 .r),
-        border: Border.all(color: AppColors.selectLangugaeColor.withOpacity(0.1), width: 3 .w),
+        borderRadius: BorderRadius.circular(26.r),
+        border: Border.all(
+          color: widget.ishow
+              ? AppColors.selectLangugaeColor.withOpacity(0.1)
+              : Colors.transparent, // Handle ishow for border visibility
+          width: widget.ishow ? 3.w : 0,
+        ),
+        color: widget.ishow ? null : Colors.grey.shade100, // Optional background when no border
       ),
-      child: ishow?TextFormField(
+      child: TextFormField(
+        controller: widget.controller,
+        obscureText: widget.isPassword ? _obscureText : false,
+        validator: widget.validator,
+        onChanged: widget.onChanged,
+        keyboardType: widget.keyboardType,
+        maxLines: widget.maxLines,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10 .w),
-          hintText: text,
-          
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 18.h,
+          ),
+          hintText: widget.text,
           hintStyle: TextStyle(
             fontFamily: "giory",
-            fontSize:fontsize?? 21 .sp,
+            fontSize: widget.fontsize ?? 21.sp,
             color: AppColors.languageTextColor,
           ),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-        ),
-      ):Center(
-        child: TextFormField(
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10 .w),
-            hintText: text,
-            
-            hintStyle: TextStyle(
-              fontFamily: "giory",
-              fontSize:fontsize?? 22 .sp,
+          suffixIcon: widget.isPassword
+              ? IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility_off : Icons.visibility,
               color: AppColors.languageTextColor,
             ),
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          )
+              : null,
         ),
       ),
     );

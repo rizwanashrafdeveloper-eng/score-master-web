@@ -242,32 +242,32 @@ class CreateNewSessionScreen extends StatelessWidget {
                           fontSize: 28.sp,
                         ),
                         SizedBox(height: 30.h,),
-                             GameSelectUseableContainer(
-                          
-                            // fontSize:ResponsiveFont.getFontSizeCustom(defaultSize: 13*widthScaleFactor,smallSize: 10*widthScaleFactor),
-                         text1: "odyssee_des_okr".tr,
-                              text2: "strategic_goal_workshop".tr,
-                          isSelected: isSelected,
-                        ),
-                           SizedBox(height: 20.h),
-                        GameSelectUseableContainer(
-                            
-                            // fontSize:ResponsiveFont.getFontSizeCustom(defaultSize: 13*widthScaleFactor,smallSize: 10*widthScaleFactor),
-                            
-                        text1: "feedloop".tr,
-                              text2: "feedback_collab_game".tr,
-                          isSelected: false,
-                        ),
-                        SizedBox(height: 20.h),
-                        GameSelectUseableContainer(
-                            
-                            
-                            // fontSize:ResponsiveFont.getFontSizeCustom(defaultSize: 13*widthScaleFactor,smallSize: 10*widthScaleFactor),
-                            
-                        text1: "innovation_challenge".tr,
-                              text2: "creative_problem_workshop".tr,
-                          isSelected: isSelected,
-                        ),
+                        //      GameSelectUseableContainer(
+                        //
+                        //     // fontSize:ResponsiveFont.getFontSizeCustom(defaultSize: 13*widthScaleFactor,smallSize: 10*widthScaleFactor),
+                        //  text1: "odyssee_des_okr".tr,
+                        //       text2: "strategic_goal_workshop".tr,
+                        //   isSelected: isSelected,
+                        // ),
+                        //    SizedBox(height: 20.h),
+                        // GameSelectUseableContainer(
+                        //
+                        //     // fontSize:ResponsiveFont.getFontSizeCustom(defaultSize: 13*widthScaleFactor,smallSize: 10*widthScaleFactor),
+                        //
+                        // text1: "feedloop".tr,
+                        //       text2: "feedback_collab_game".tr,
+                        //   isSelected: false,
+                        // ),
+                        // SizedBox(height: 20.h),
+                        // GameSelectUseableContainer(
+                        //
+                        //
+                        //     // fontSize:ResponsiveFont.getFontSizeCustom(defaultSize: 13*widthScaleFactor,smallSize: 10*widthScaleFactor),
+                        //
+                        // text1: "innovation_challenge".tr,
+                        //       text2: "creative_problem_workshop".tr,
+                        //   isSelected: isSelected,
+                        // ),
                             
                          SizedBox(height: 31 .h),
                         BoldText(
