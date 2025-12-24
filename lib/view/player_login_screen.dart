@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:scorer_web/components/responsive_fonts.dart';
 import 'package:scorer_web/constants/appcolors.dart';
 import 'package:scorer_web/constants/appimages.dart';
-import 'package:scorer_web/constants/route_name.dart';
 import 'package:scorer_web/validator.dart';
 import 'package:scorer_web/view/gradient_background.dart';
 import 'package:scorer_web/widgets/create_container.dart';
@@ -24,7 +23,7 @@ class PlayerLoginScreen extends StatefulWidget {
 
 class _PlayerLoginScreenState extends State<PlayerLoginScreen>
     with TickerProviderStateMixin {
-  final LoginControllerWeb loginController = Get.put(LoginControllerWeb());
+  final AuthController loginController = Get.put(AuthController());
   final _formKey = GlobalKey<FormState>();
 
   late AnimationController _fadeController;
@@ -73,8 +72,6 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
     );
 
     _slideController.forward().then((_) => _formController.forward());
-
-
   }
 
   @override
@@ -93,7 +90,7 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// 🔙 Back Button
+              /// Back Button
               Padding(
                 padding: EdgeInsets.only(left: 50.w, top: 50.h),
                 child: FadeTransition(
@@ -105,14 +102,14 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                 ),
               ),
 
-              /// 🧍‍♂️ Main Content
+              /// Main Content
               Padding(
                 padding: EdgeInsets.only(left: 60.w, right: 159.w),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      /// 🎯 Left Image + Title
+                      /// Left Image + Title
                       SlideTransition(
                         position: _slideImage,
                         child: Stack(
@@ -124,13 +121,13 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                               height: 641.h,
                             ),
                             Positioned(
-                              right: -120,
-                              top: 180,
+                              right: -200.w,
+                              top: 180.h,
                               child: FadeTransition(
                                 opacity: _fadeController,
                                 child: CreateContainer(
                                   width: 299.w,
-                                  text: "Player Login",
+                                  text: "player_login".tr,
                                   fontsize2: 30.sp,
                                 ),
                               ),
@@ -139,7 +136,7 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                         ),
                       ),
 
-                      /// 📝 Right Form
+                      /// Right Form
                       FadeTransition(
                         opacity: _formOpacity,
                         child: SlideTransition(
@@ -164,7 +161,7 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                                       text: "enter_email".tr,
                                       validator: Validators.email,
                                       fontsize: 21.sp,
-                                      height: 70.h,
+                                      //height: 70.h,
                                       isPassword: false,
                                     ),
                                     SizedBox(height: 9.h),
@@ -174,7 +171,7 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                                       text: "enter_password".tr,
                                       validator: Validators.password,
                                       fontsize: 21.sp,
-                                      height: 70.h,
+                                      //height: 70.h,
                                       isPassword: true,
                                     ),
                                     SizedBox(height: 20.h),
@@ -209,8 +206,8 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                                                 ),
                                                 child: loginController
                                                     .rememberMe.value
-                                                    ? const Icon(Icons.check,
-                                                    size: 20,
+                                                    ? Icon(Icons.check,
+                                                    size: 20.sp,
                                                     color: Colors.white)
                                                     : null,
                                               ),
@@ -246,9 +243,9 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                                     /// Login Button
                                     Obx(() => LoginButton(
                                       text: loginController.isLoading.value
-                                          ? "Loading..."
+                                          ? "loading".tr
                                           : "login".tr,
-                                      fontSize: 20,
+                                      fontSize: 20.sp,
                                       onTap: () {
                                         if (_formKey.currentState!
                                             .validate()) {
@@ -271,9 +268,9 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
 
               const Spacer(),
 
-              /// 🌊 Bottom Animation
+              /// Bottom Animation
               Padding(
-                padding: EdgeInsets.only(left: 50.w),
+                padding: EdgeInsets.only(left: 50.w, bottom: 50.h),
                 child: TweenAnimationBuilder<double>(
                   duration: const Duration(milliseconds: 1500),
                   tween: Tween<double>(begin: 0.0, end: 1.0),
@@ -281,7 +278,7 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                     return Opacity(
                       opacity: value,
                       child: Transform.translate(
-                        offset: Offset(-50 * (1 - value), 0),
+                        offset: Offset(-50.w * (1 - value), 0),
                         child: child,
                       ),
                     );
@@ -298,12 +295,8 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
         ),
       ),
     );
-
-
   }
 }
-
-
 
 
 

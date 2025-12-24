@@ -96,7 +96,7 @@ class AdminCreateNewSessionScreen extends StatelessWidget {
                                               fontWeight: FontWeight.bold),
                                               children: [
                      TextSpan(
-                      text: "create_ne".tr,   
+                      text: "create_new".tr,
                       
                       style: TextStyle(
                         fontSize: 48.sp,
@@ -117,7 +117,7 @@ class AdminCreateNewSessionScreen extends StatelessWidget {
                             ),
                           ),
                           child:  Text(
-                           "w".tr,    
+                           "session".tr,
                             style: TextStyle(
                                                       fontSize: 48.sp,
                                          color: AppColors.blueColor, 

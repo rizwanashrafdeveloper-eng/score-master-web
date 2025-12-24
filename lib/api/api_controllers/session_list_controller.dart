@@ -13,7 +13,7 @@ class SessionsListController extends GetxController {
   var activeSessions = <SessionSummary>[].obs;
 
   final SessionsListService _service = SessionsListService();
-  final SessionController sessionController = Get.find<SessionController>();
+  final SessionController sessionController = Get.put(SessionController());
 
   @override
   void onInit() {

@@ -58,7 +58,7 @@ class PlayerInfo {
 
 class SessionStats {
   int? totalSessions;
-  int? avgScore;
+  num? avgScore;
   int? totalMVP;
 
   SessionStats({this.totalSessions, this.avgScore, this.totalMVP});
@@ -86,7 +86,7 @@ class User {
   String? role;
   String? createdAt;
   dynamic roleId;
-  List<dynamic>? sessions; // kept dynamic since no model given
+  List<dynamic>? sessions;
   List<Score>? scores;
   List<JoinedSessions>? joinedSessions;
   List<dynamic>? createdTeams;

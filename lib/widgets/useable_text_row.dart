@@ -11,6 +11,7 @@ class UseableTextrow extends StatelessWidget {
   final double? height;
   final bool ishow;
   final double? fontsize11;
+  final double? fontSize;
   const UseableTextrow({
     super.key,
     required this.color,
@@ -19,6 +20,7 @@ class UseableTextrow extends StatelessWidget {
     this.height,
     this.ishow = false,
     this.fontsize11,
+    this.fontSize,
   });
 
   @override

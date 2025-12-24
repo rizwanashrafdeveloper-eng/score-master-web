@@ -66,6 +66,15 @@ class FacilitatorDashboard extends StatelessWidget {
                 onTap: () {
                   Get.toNamed(RouteName.createNewSessionScreen);
                 },
+
+                onNotificationTap:() {
+                  Get.toNamed(RouteName.notificationScreen);
+                },
+
+                // ✅ ADD THIS: Pass onSettingsTap callback
+                onSettingsTap: () {
+                  Get.toNamed(RouteName.settingsScreen);
+                },
               ),
 
               SizedBox(height: 56.h),

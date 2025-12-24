@@ -1,544 +1,357 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
-// import 'dart:async';
-// import '../../constants/appcolors.dart';
-// import '../api_models/game_format_phase.dart';
-// import '../api_urls.dart';
-//
-// // Add this enum for phase states
-// enum PhaseState {
-//   active,     // Currently running
-//   completed,  // Finished
-//   inactive    // Not started
-// }
-//
-// class GameFormatPhaseController extends GetxController {
-//   var isLoading = false.obs;
-//   var gameFormatPhaseModel = Rxn<GameFormatPhaseModel>();
-//   var errorMessage = ''.obs;
-//   var currentPhaseIndex = 0.obs;
-//   var remainingSeconds = 0.obs;
-//   Timer? _timer;
-//   var sessionId = 0.obs;
-//   var hasData = false.obs;
-//
-//   // Add phase states - track which phases are actually active/completed
-//   var phaseStates = <int, PhaseState>{}.obs; // phaseId -> PhaseState
-//
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     print('🎮 GameFormatPhaseController initialized');
-//     // REMOVED arguments handling - we'll use setSessionId() manually
-//   }
-//
-//   // Set session ID and fetch phases
-//   void setSessionId(int id) {
-//     print('🎯 Setting session ID: $id');
-//     sessionId.value = id;
-//     fetchGameFormatPhases();
-//   }
-//
-//   // Fetch game format phases from API
-//   Future<void> fetchGameFormatPhases() async {
-//     try {
-//       if (sessionId.value == 0) {
-//         errorMessage.value = 'No session ID provided';
-//         hasData.value = false;
-//         print('❌ No session ID provided');
-//         return;
-//       }
-//
-//       isLoading.value = true;
-//       errorMessage.value = '';
-//       hasData.value = false;
-//
-//       // Use the correct endpoint for session phases
-//       final url = ApiEndpoints.getPhaseSessionUrl(sessionId.value);
-//       print('🔄 Fetching phases from: $url');
-//
-//       final response = await http.get(
-//         Uri.parse(url),
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       );
-//
-//       print('📥 Response status: ${response.statusCode}');
-//       print('📥 Response body: ${response.body}');
-//
-//       if (response.statusCode == 200) {
-//         final jsonData = json.decode(response.body);
-//         print('📊 Full API Response: $jsonData');
-//
-//         // Handle different response structures
-//         if (jsonData is Map<String, dynamic>) {
-//           // Check if we have the nested gameFormat structure
-//           if (jsonData['gameFormat'] != null && jsonData['gameFormat']['phases'] != null) {
-//             print('✅ Found phases in gameFormat.phases structure');
-//             gameFormatPhaseModel.value = GameFormatPhaseModel.fromJson(jsonData);
-//           }
-//           // Check if phases are at root level
-//           else if (jsonData['phases'] != null) {
-//             print('✅ Found phases in root level');
-//             // Create a mock gameFormat structure
-//             gameFormatPhaseModel.value = GameFormatPhaseModel.fromJson({
-//               'sessionId': sessionId.value,
-//               'gameFormat': {
-//                 'id': jsonData['id'],
-//                 'name': jsonData['name'] ?? 'Session ${sessionId.value}',
-//                 'description': jsonData['description'] ?? '',
-//                 'mode': jsonData['mode'] ?? 'team',
-//                 'totalPhases': (jsonData['phases'] as List).length,
-//                 'timeDuration': jsonData['timeDuration'] ?? 0,
-//                 'isPublished': jsonData['isPublished'] ?? false,
-//                 'isActive': jsonData['isActive'] ?? true,
-//                 'createdAt': jsonData['createdAt'],
-//                 'updatedAt': jsonData['updatedAt'],
-//                 'createdById': jsonData['createdById'],
-//                 'phases': jsonData['phases'],
-//               }
-//             });
-//           }
-//           // No phases found
-//           else {
-//             print('⚠️ No phases found in response');
-//             errorMessage.value = 'No phases found for this session';
-//             Get.snackbar(
-//               'Info',
-//               'No phases configured for this session',
-//               snackPosition: SnackPosition.TOP,
-//             );
-//             return;
-//           }
-//         }
-//
-//         hasData.value = true;
-//
-//         // Debug: Print what we received
-//         print('🎯 Game Format: ${gameFormatPhaseModel.value?.gameFormat?.name}');
-//         print('📋 Phases count: ${allPhases.length}');
-//
-//         for (var phase in allPhases) {
-//           print('   - ${phase.name} (Order: ${phase.order}, Duration: ${phase.timeDuration}min)');
-//         }
-//
-//         // Reset current phase index and start timer
-//         currentPhaseIndex.value = 0;
-//
-//         // Initialize phase states
-//         _initializePhaseStates();
-//
-//         startTimerForCurrentPhase();
-//
-//         Get.snackbar(
-//           '✅ Success',
-//           'Loaded ${allPhases.length} phases',
-//           snackPosition: SnackPosition.TOP,
-//           backgroundColor: Colors.green,
-//           colorText: Colors.white,
-//         );
-//       } else {
-//         errorMessage.value = 'Failed to load phases: ${response.statusCode}';
-//         hasData.value = false;
-//         Get.snackbar(
-//           '❌ Error',
-//           'Failed to load phases: ${response.statusCode}',
-//           snackPosition: SnackPosition.TOP,
-//           backgroundColor: Colors.red,
-//           colorText: Colors.white,
-//         );
-//       }
-//     } catch (e) {
-//       print('❌ Error fetching phases: $e');
-//       errorMessage.value = 'Error: $e';
-//       hasData.value = false;
-//       Get.snackbar(
-//         '❌ Error',
-//         'An error occurred: $e',
-//         snackPosition: SnackPosition.BOTTOM,
-//         backgroundColor: Colors.red,
-//         colorText: Colors.white,
-//       );
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-//
-//   // Initialize phase states based on current phase index
-//   void _initializePhaseStates() {
-//     phaseStates.clear();
-//     for (int i = 0; i < allPhases.length; i++) {
-//       final phase = allPhases[i];
-//       if (i < currentPhaseIndex.value) {
-//         phaseStates[phase.id!] = PhaseState.completed;
-//       } else if (i == currentPhaseIndex.value) {
-//         phaseStates[phase.id!] = PhaseState.active;
-//       } else {
-//         phaseStates[phase.id!] = PhaseState.inactive;
-//       }
-//     }
-//     print('📊 Initialized phase states: $phaseStates');
-//   }
-//
-//   // Start timer for the current phase
-//   void startTimerForCurrentPhase() {
-//     final currentPhase = this.currentPhase;
-//     if (currentPhase != null && currentPhase.timeDuration != null) {
-//       remainingSeconds.value = currentPhase.timeDuration! * 60;
-//       print('⏰ Starting timer for ${currentPhase.name}: ${currentPhase.timeDuration} minutes');
-//
-//       _timer?.cancel();
-//       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-//         if (remainingSeconds.value > 0) {
-//           remainingSeconds.value--;
-//         } else {
-//           timer.cancel();
-//           print('⏰ Timer completed for ${currentPhase.name}');
-//           // Auto-move to next phase when time completes
-//           if (currentPhaseIndex.value < totalPhasesCount - 1) {
-//             nextPhase();
-//           } else {
-//             Get.snackbar(
-//               '🎉 Completed',
-//               'All phases completed!',
-//               snackPosition: SnackPosition.TOP,
-//               backgroundColor: Colors.green,
-//               colorText: Colors.white,
-//             );
-//           }
-//         }
-//       });
-//     } else {
-//       print('⚠️ Cannot start timer - no current phase or duration');
-//     }
-//   }
-//
-//   // Get current phase
-//   Phases? get currentPhase {
-//     if (allPhases.isNotEmpty && currentPhaseIndex.value < allPhases.length) {
-//       return allPhases[currentPhaseIndex.value];
-//     }
-//     return null;
-//   }
-//
-//   // Get current ACTIVE phase (not just viewed phase)
-//   Phases? get activePhase {
-//     for (int i = 0; i < allPhases.length; i++) {
-//       if (phaseStates[allPhases[i].id!] == PhaseState.active) {
-//         return allPhases[i];
-//       }
-//     }
-//     return currentPhase; // fallback
-//   }
-//
-//   // Get current phase title
-//   String get currentPhaseTitle {
-//     return currentPhase?.name ?? "Phase ${currentPhaseIndex.value + 1}";
-//   }
-//
-//   // Get current phase description
-//   String get currentPhaseDescription {
-//     return currentPhase?.description ?? "";
-//   }
-//
-//   // Get current phase duration
-//   int get currentPhaseDuration {
-//     return currentPhase?.timeDuration ?? 0;
-//   }
-//
-//   // Get phase status
-//   String getPhaseStatus(int index) {
-//     if (index < currentPhaseIndex.value) {
-//       return "completed".tr;
-//     } else if (index == currentPhaseIndex.value) {
-//       return "active".tr;
-//     } else {
-//       return "pending".tr;
-//     }
-//   }
-//
-//   // Get phase status color
-//   Color getPhaseStatusColor(int index) {
-//     if (index < currentPhaseIndex.value) {
-//       return AppColors.forwardColor;
-//     } else if (index == currentPhaseIndex.value) {
-//       return AppColors.selectLangugaeColor;
-//     } else {
-//       return AppColors.watchColor;
-//     }
-//   }
-//
-//   // Get phase status icon
-//   IconData getPhaseStatusIcon(int index) {
-//     if (index < currentPhaseIndex.value) {
-//       return Icons.check;
-//     } else if (index == currentPhaseIndex.value) {
-//       return Icons.play_arrow;
-//     } else {
-//       return Icons.watch_later;
-//     }
-//   }
-//
-//   // Get all phases
-//   List<Phases> get allPhases {
-//     return gameFormatPhaseModel.value?.gameFormat?.phases ?? [];
-//   }
-//
-//   // Get total phases count
-//   int get totalPhasesCount {
-//     return allPhases.length;
-//   }
-//
-//   // Get total time duration (sum of all phase durations)
-//   int get totalTimeDuration {
-//     return allPhases.fold(0, (sum, phase) => sum + (phase.timeDuration ?? 0));
-//   }
-//
-//   // Get remaining time as formatted string
-//   String getRemainingTime(int phaseDuration) {
-//     final minutes = remainingSeconds.value ~/ 60;
-//     final seconds = remainingSeconds.value % 60;
-//     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-//   }
-//
-//   // Get progress percentage for current phase
-//   double get currentPhaseProgress {
-//     final currentPhase = this.currentPhase;
-//     if (currentPhase != null && currentPhase.timeDuration != null) {
-//       final totalSeconds = currentPhase.timeDuration! * 60;
-//       return totalSeconds > 0 ? (remainingSeconds.value / totalSeconds) : 0.0;
-//     }
-//     return 0.0;
-//   }
-//
-//   // Check if phase is completed
-//   bool isPhaseCompleted(int index) {
-//     if (index >= 0 && index < allPhases.length) {
-//       final phaseId = allPhases[index].id;
-//       return phaseStates[phaseId] == PhaseState.completed;
-//     }
-//     return false;
-//   }
-//
-//   // Check if phase is active
-//   bool isPhaseActive(int index) {
-//     if (index >= 0 && index < allPhases.length) {
-//       final phaseId = allPhases[index].id;
-//       return phaseStates[phaseId] == PhaseState.active;
-//     }
-//     return false;
-//   }
-//
-//   // Check if phase is inactive (not started)
-//   bool isPhaseInactive(int index) {
-//     if (index >= 0 && index < allPhases.length) {
-//       final phaseId = allPhases[index].id;
-//       return phaseStates[phaseId] == PhaseState.inactive;
-//     }
-//     return false;
-//   }
-//
-//   // Check if phase is pending (old method for compatibility)
-//   bool isPhasePending(int index) {
-//     return index > currentPhaseIndex.value;
-//   }
-//
-//   // Get phase by index
-//   Phases? getPhase(int index) {
-//     if (index >= 0 && index < allPhases.length) {
-//       return allPhases[index];
-//     }
-//     return null;
-//   }
-//
-//   // Move to next phase - actually activate it
-//   void nextPhase() {
-//     if (currentPhaseIndex.value < totalPhasesCount - 1) {
-//       // Mark current phase as completed
-//       final currentPhaseId = currentPhase?.id;
-//       if (currentPhaseId != null) {
-//         phaseStates[currentPhaseId] = PhaseState.completed;
-//       }
-//
-//       currentPhaseIndex.value++;
-//
-//       // Mark new phase as active
-//       final newPhaseId = currentPhase?.id;
-//       if (newPhaseId != null) {
-//         phaseStates[newPhaseId] = PhaseState.active;
-//       }
-//
-//       print('⏭️ Activated next phase: ${currentPhase?.name}');
-//       startTimerForCurrentPhase();
-//
-//       Get.snackbar(
-//         '⏭️ Phase Activated',
-//         'Moved to ${currentPhase?.name ?? "Phase ${currentPhaseIndex.value + 1}"}',
-//         snackPosition: SnackPosition.TOP,
-//         backgroundColor: Colors.blue,
-//         colorText: Colors.white,
-//       );
-//     } else {
-//       Get.snackbar(
-//         'ℹ️ Info',
-//         'No more phases available',
-//         snackPosition: SnackPosition.TOP,
-//       );
-//     }
-//   }
-//
-//   // Move to previous phase - reactivate it
-//   void previousPhase() {
-//     if (currentPhaseIndex.value > 0) {
-//       // Mark current phase as inactive
-//       final currentPhaseId = currentPhase?.id;
-//       if (currentPhaseId != null) {
-//         phaseStates[currentPhaseId] = PhaseState.inactive;
-//       }
-//
-//       currentPhaseIndex.value--;
-//
-//       // Mark previous phase as active
-//       final newPhaseId = currentPhase?.id;
-//       if (newPhaseId != null) {
-//         phaseStates[newPhaseId] = PhaseState.active;
-//       }
-//
-//       print('⏮️ Reactivated previous phase: ${currentPhase?.name}');
-//       startTimerForCurrentPhase();
-//
-//       Get.snackbar(
-//         '⏮️ Phase Reactivated',
-//         'Returned to ${currentPhase?.name ?? "Phase ${currentPhaseIndex.value + 1}"}',
-//         snackPosition: SnackPosition.TOP,
-//         backgroundColor: Colors.orange,
-//         colorText: Colors.white,
-//       );
-//     } else {
-//       Get.snackbar(
-//         'ℹ️ Info',
-//         'Already at the first phase',
-//         snackPosition: SnackPosition.TOP,
-//       );
-//     }
-//   }
-//
-//   // Refresh data
-//   Future<void> refreshPhases() async {
-//     print('🔄 Refreshing phases data');
-//     await fetchGameFormatPhases();
-//   }
-//
-//   // Test with sample data (for debugging)
-//   void testWithSampleData() {
-//     print('🧪 Loading test sample data');
-//     final sampleData = {
-//       "id": 14,
-//       "gameFormatId": 11,
-//       "description": "ww",
-//       "createdById": 5,
-//       "joinCode": "ac5028",
-//       "joiningLink": "https://your-app.com/join/ac5028",
-//       "status": "PAUSED",
-//       "duration": 60,
-//       "elapsedTime": 202,
-//       "startedAt": null,
-//       "pausedAt": "2025-10-11T05:54:11.624Z",
-//       "endedAt": null,
-//       "createdAt": "2025-10-11T05:50:42.179Z",
-//       "updatedAt": "2025-10-11T05:54:11.627Z",
-//       "gameFormat": {
-//         "id": 11,
-//         "name": "Test Game Format",
-//         "description": "Test description",
-//         "mode": "team",
-//         "totalPhases": 3,
-//         "timeDuration": 20,
-//         "isPublished": false,
-//         "isActive": true,
-//         "createdAt": "2025-10-08T04:23:28.399Z",
-//         "updatedAt": "2025-10-08T04:23:28.399Z",
-//         "createdById": 1,
-//         "phases": [
-//           {
-//             "id": 23,
-//             "gameFormatId": 11,
-//             "name": "Phase 1",
-//             "description": "This is the first phase",
-//             "order": 1,
-//             "scoringType": "HYBRID",
-//             "timeDuration": 5, // Shorter for testing
-//             "challengeTypes": ["MCQ", "Puzzle"],
-//             "difficulty": "MEDIUM",
-//             "badge": "Starter Badge",
-//             "requiredScore": 50,
-//             "createdAt": "2025-10-11T07:41:30.120Z",
-//             "updatedAt": "2025-10-11T07:41:30.120Z",
-//           },
-//           {
-//             "id": 24,
-//             "gameFormatId": 11,
-//             "name": "Phase 2",
-//             "description": "This is the second phase",
-//             "order": 2,
-//             "scoringType": "HYBRID",
-//             "timeDuration": 3, // Shorter for testing
-//             "challengeTypes": ["MCQ", "Puzzle"],
-//             "difficulty": "MEDIUM",
-//             "badge": "Intermediate Badge",
-//             "requiredScore": 75,
-//             "createdAt": "2025-10-11T07:41:40.738Z",
-//             "updatedAt": "2025-10-11T07:41:40.738Z",
-//           },
-//           {
-//             "id": 25,
-//             "gameFormatId": 11,
-//             "name": "Phase 3",
-//             "description": "This is the third phase",
-//             "order": 3,
-//             "scoringType": "HYBRID",
-//             "timeDuration": 4, // Shorter for testing
-//             "challengeTypes": ["MCQ", "Puzzle"],
-//             "difficulty": "HARD",
-//             "badge": "Expert Badge",
-//             "requiredScore": 100,
-//             "createdAt": "2025-10-11T07:41:50.738Z",
-//             "updatedAt": "2025-10-11T07:41:50.738Z",
-//           }
-//         ]
-//       }
-//     };
-//
-//     try {
-//       gameFormatPhaseModel.value = GameFormatPhaseModel.fromJson(sampleData);
-//       hasData.value = true;
-//       currentPhaseIndex.value = 0;
-//
-//       // Initialize phase states for test data
-//       _initializePhaseStates();
-//
-//       startTimerForCurrentPhase();
-//       print('✅ Test data loaded successfully with ${allPhases.length} phases');
-//
-//       Get.snackbar(
-//         '🧪 Test Data',
-//         'Loaded ${allPhases.length} test phases',
-//         snackPosition: SnackPosition.TOP,
-//         backgroundColor: Colors.purple,
-//         colorText: Colors.white,
-//       );
-//     } catch (e) {
-//       print('❌ Error loading test data: $e');
-//     }
-//   }
-//
-//   @override
-//   void onClose() {
-//     _timer?.cancel();
-//     print('👋 GameFormatPhaseController disposed');
-//     super.onClose();
-//   }
-// }
+// lib/api/api_controllers/game_format_phase.dart
+import 'dart:convert';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../api_endpoints/api_end_points.dart';
+import '../api_models/game_format_phase.dart';
+import '../auth_helper.dart';
+import '../game_format_phase_base_controller.dart';
+
+class GameFormatPhaseController extends GameFormatPhaseBaseController {
+
+  /// ✅ Track the REAL current phase from API
+  var realCurrentPhaseId = 0.obs;
+
+// In your GameFormatPhaseController, update the fetchGameFormatPhases method:
+
+  Future<void> fetchGameFormatPhases() async {
+    try {
+      print('═══════════════════════════════════════════════');
+      print('🔄 [PHASE FETCH] Starting phase fetch...');
+      print('═══════════════════════════════════════════════');
+
+      if (sessionId.value == 0) {
+        errorMessage.value = 'No session ID provided';
+        print('❌ [PHASE FETCH] REJECTED: Session ID is 0');
+        return;
+      }
+
+      print('✅ [PHASE FETCH] Session ID validated: ${sessionId.value}');
+
+      isLoading(true);
+      errorMessage.value = '';
+      hasData.value = false;
+
+      final token = await AuthHelper.getAuthToken();
+      if (token == null || token.isEmpty) {
+        errorMessage.value = 'Authentication required';
+        isLoading(false);
+        print('❌ [PHASE FETCH] No auth token available');
+        return;
+      }
+
+      print('✅ [PHASE FETCH] Auth token validated');
+
+      final url = ApiEndpoints.getPhaseSessionUrl(sessionId.value);
+      print('🌐 [PHASE FETCH] API URL: $url');
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('📥 [PHASE FETCH] Response Status: ${response.statusCode}');
+      print('📦 [PHASE FETCH] Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        print('📊 [PHASE FETCH] Decoded JSON type: ${jsonData.runtimeType}');
+        print('📊 [PHASE FETCH] Full JSON response:');
+        print(jsonData);
+        print('📊 [PHASE FETCH] JSON Keys: ${jsonData.keys}');
+
+        // ✅ Extract current/active phase ID from multiple possible locations
+        int? activePhaseId;
+
+        // Try different possible keys
+        if (jsonData['currentPhaseId'] != null) {
+          activePhaseId = jsonData['currentPhaseId'];
+          print('🎯 [PHASE FETCH] Found currentPhaseId: $activePhaseId');
+        } else if (jsonData['activePhaseId'] != null) {
+          activePhaseId = jsonData['activePhaseId'];
+          print('🎯 [PHASE FETCH] Found activePhaseId: $activePhaseId');
+        } else if (jsonData['activePhase'] != null) {
+          if (jsonData['activePhase'] is Map && jsonData['activePhase']['id'] != null) {
+            activePhaseId = jsonData['activePhase']['id'];
+            print('🎯 [PHASE FETCH] Found activePhase.id: $activePhaseId');
+          }
+        } else if (jsonData['currentPhase'] != null) {
+          if (jsonData['currentPhase'] is Map && jsonData['currentPhase']['id'] != null) {
+            activePhaseId = jsonData['currentPhase']['id'];
+            print('🎯 [PHASE FETCH] Found currentPhase.id: $activePhaseId');
+          }
+        }
+
+        if (activePhaseId != null) {
+          print('✅ [PHASE FETCH] Active Phase ID extracted: $activePhaseId');
+        } else {
+          print('⚠️ [PHASE FETCH] No active phase ID in response, will use first phase');
+        }
+
+        // Extract phases from response
+        List<Phases> phasesList = [];
+
+        // Check for phases in different possible locations
+        if (jsonData['phases'] != null && jsonData['phases'] is List) {
+          print('📋 [PHASE FETCH] Extracting phases from root phases array');
+          phasesList = (jsonData['phases'] as List)
+              .map<Phases>((phaseJson) => Phases.fromJson(phaseJson))
+              .toList();
+          print('✅ [PHASE FETCH] Extracted ${phasesList.length} phases from root');
+        } else if (jsonData['gameFormat'] != null && jsonData['gameFormat']['phases'] != null) {
+          print('📋 [PHASE FETCH] Extracting phases from gameFormat.phases');
+          gameFormatPhaseModel.value = GameFormatPhaseModel.fromJson(jsonData);
+          phasesList = gameFormatPhaseModel.value?.gameFormat?.phases ?? [];
+          print('✅ [PHASE FETCH] Extracted ${phasesList.length} phases from gameFormat');
+        } else if (jsonData['sessionPhases'] != null && jsonData['sessionPhases'] is List) {
+          print('📋 [PHASE FETCH] Extracting phases from sessionPhases array');
+          phasesList = (jsonData['sessionPhases'] as List)
+              .map<Phases>((phaseJson) => Phases.fromJson(phaseJson))
+              .toList();
+          print('✅ [PHASE FETCH] Extracted ${phasesList.length} phases from sessionPhases');
+        } else {
+          print('❌ [PHASE FETCH] No phases found in response');
+          print('📊 [PHASE FETCH] Available keys: ${jsonData.keys}');
+
+          // If we have a gameFormat but no phases, maybe it's nested differently
+          if (jsonData['gameFormat'] != null) {
+            print('📊 [PHASE FETCH] GameFormat exists, checking structure:');
+            print(jsonData['gameFormat']);
+          }
+        }
+
+        if (phasesList.isEmpty) {
+          errorMessage.value = 'No phases found for this session';
+          print('❌ [PHASE FETCH] FAILED: No phases in response');
+          isLoading(false);
+          return;
+        }
+
+        allPhases.value = phasesList;
+        print('✅ [PHASE FETCH] Total phases loaded: ${allPhases.length}');
+
+        // Log each phase
+        for (int i = 0; i < allPhases.length; i++) {
+          final phase = allPhases[i];
+          print('   Phase ${i + 1}: ID=${phase.id}, Name="${phase.name}", Order=${phase.order}, Duration=${phase.timeDuration}');
+        }
+
+        // ✅ Set the real current phase
+        if (activePhaseId != null && activePhaseId > 0) {
+          realCurrentPhaseId.value = activePhaseId;
+          print('🎯 [PHASE FETCH] Setting realCurrentPhaseId: $activePhaseId');
+
+          // Find the index of this phase
+          final index = allPhases.indexWhere((p) => p.id == activePhaseId);
+          if (index != -1) {
+            currentPhaseIndex.value = index;
+            print('✅ [PHASE FETCH] Found phase at index $index');
+            print('   Phase Name: ${allPhases[index].name}');
+          } else {
+            print('⚠️ [PHASE FETCH] Phase ID $activePhaseId not found in list');
+            print('   Available Phase IDs: ${allPhases.map((p) => p.id).toList()}');
+            currentPhaseIndex.value = 0;
+            realCurrentPhaseId.value = allPhases.first.id ?? 0;
+            print('⚠️ [PHASE FETCH] Defaulting to first phase: ${realCurrentPhaseId.value}');
+          }
+        } else {
+          // No active phase specified, use first phase
+          currentPhaseIndex.value = 0;
+          realCurrentPhaseId.value = allPhases.first.id ?? 0;
+          print('⚙️ [PHASE FETCH] No active phase from API');
+          print('   Using first phase: ID=${realCurrentPhaseId.value}, Name="${allPhases.first.name}"');
+        }
+
+        // ✅ Save the REAL current phase ID
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('current_phase_id', realCurrentPhaseId.value);
+        print('💾 [PHASE FETCH] Saved to storage: current_phase_id=${realCurrentPhaseId.value}');
+
+        hasData.value = true;
+        startTimerForCurrentPhase();
+
+        print('═══════════════════════════════════════════════');
+        print('✅ [PHASE FETCH] SUCCESS!');
+        print('   Total Phases: ${allPhases.length}');
+        print('   Current Phase ID: ${realCurrentPhaseId.value}');
+        print('   Current Phase Index: ${currentPhaseIndex.value}');
+        print('   Current Phase Name: ${currentPhase?.name ?? "Unknown"}');
+        print('═══════════════════════════════════════════════');
+
+      } else {
+        errorMessage.value = 'Failed to load phases: ${response.statusCode}';
+        print('❌ [PHASE FETCH] HTTP Error: ${response.statusCode}');
+        print('   Response: ${response.body}');
+      }
+    } catch (e, stackTrace) {
+      errorMessage.value = 'Error: $e';
+      print('❌ [PHASE FETCH] EXCEPTION: $e');
+      print('Stack trace: $stackTrace');
+    } finally {
+      isLoading(false);
+      print('🏁 [PHASE FETCH] Completed (loading=false)');
+    }
+  }
+
+  /// ✅ Get the REAL current phase ID (not index-based)
+  Future<int> getCurrentPhaseId() async {
+    try {
+      print('🔍 [GET PHASE ID] Requesting current phase ID...');
+
+      // If we have a real current phase ID, use it
+      if (realCurrentPhaseId.value > 0) {
+        print('✅ [GET PHASE ID] Using cached: ${realCurrentPhaseId.value}');
+        return realCurrentPhaseId.value;
+      }
+
+      print('⚠️ [GET PHASE ID] No cached ID, fetching phases...');
+
+      // Otherwise fetch phases to get it
+      if (allPhases.isEmpty) {
+        await fetchGameFormatPhases();
+      }
+
+      // After fetch, return the real current phase ID
+      if (realCurrentPhaseId.value > 0) {
+        print('✅ [GET PHASE ID] Got from fetch: ${realCurrentPhaseId.value}');
+        return realCurrentPhaseId.value;
+      }
+
+      // Last resort: return first phase ID if available
+      if (allPhases.isNotEmpty) {
+        final firstPhaseId = allPhases.first.id ?? 0;
+        print('⚙️ [GET PHASE ID] Using first phase: $firstPhaseId');
+        return firstPhaseId;
+      }
+
+      print('❌ [GET PHASE ID] No phases available');
+      return 0;
+    } catch (e) {
+      print('❌ [GET PHASE ID] Error: $e');
+      return 0;
+    }
+  }
+
+  @override
+  void setSessionId(int id) {
+    if (id <= 0) {
+      print('❌ [SET SESSION] Rejected invalid ID: $id');
+      return;
+    }
+
+    print('🎯 [SET SESSION] Setting session ID: $id (was: ${sessionId.value})');
+    sessionId.value = id;
+
+    // Reset phase tracking when session changes
+    realCurrentPhaseId.value = 0;
+    currentPhaseIndex.value = 0;
+    print('🔄 [SET SESSION] Reset phase tracking');
+  }
+
+  @override
+  Phases? getPhaseById(int phaseId) {
+    final phase = allPhases.firstWhereOrNull((phase) => phase.id == phaseId);
+    if (phase != null) {
+      print('✅ [GET BY ID] Found phase $phaseId: ${phase.name}');
+    } else {
+      print('❌ [GET BY ID] Phase $phaseId not found');
+    }
+    return phase;
+  }
+
+  @override
+  int getPhaseIndexById(int phaseId) {
+    final index = allPhases.indexWhere((phase) => phase.id == phaseId);
+    print('🔍 [GET INDEX] Phase $phaseId is at index: $index');
+    return index;
+  }
+
+  @override
+  bool isPhaseActive(int index) {
+    if (index < 0 || index >= allPhases.length) return false;
+
+    final isCurrentIndex = index == currentPhaseIndex.value;
+    final phase = allPhases[index];
+    final isCurrentId = phase.id == realCurrentPhaseId.value;
+
+    final result = isCurrentIndex || isCurrentId;
+    if (result) {
+      print('✅ [IS ACTIVE] Phase at index $index is ACTIVE');
+    }
+    return result;
+  }
+
+  @override
+  bool isPhaseCompleted(int index) {
+    return index < currentPhaseIndex.value;
+  }
+
+  /// ✅ Get current phase with proper null handling
+  Phases? get currentPhase {
+    if (allPhases.isEmpty) {
+      print('⚠️ [CURRENT PHASE] No phases available');
+      return null;
+    }
+
+    // Try to find by real current phase ID first
+    if (realCurrentPhaseId.value > 0) {
+      final phase = allPhases.firstWhereOrNull((p) => p.id == realCurrentPhaseId.value);
+      if (phase != null) {
+        return phase;
+      }
+    }
+
+    // Fall back to index
+    if (currentPhaseIndex.value >= 0 && currentPhaseIndex.value < allPhases.length) {
+      return allPhases[currentPhaseIndex.value];
+    }
+
+    print('⚠️ [CURRENT PHASE] Could not determine current phase');
+    return null;
+  }
+
+  void refreshPhases() {
+    print('🔄 [REFRESH] Manual phase refresh triggered');
+    fetchGameFormatPhases();
+  }
+
+  @override
+  String getRemainingTime([int? phaseDuration]) {
+    final duration = phaseDuration ?? currentPhaseDuration * 60;
+    final minutes = (remainingSeconds.value ~/ 60).clamp(0, duration ~/ 60);
+    final seconds = remainingSeconds.value % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  /// ✅ Navigate to specific phase by ID
+  Future<void> navigateToPhaseById(int phaseId) async {
+    if (phaseId <= 0) {
+      print('❌ [NAVIGATE] Invalid phase ID: $phaseId');
+      return;
+    }
+
+    final index = allPhases.indexWhere((p) => p.id == phaseId);
+    if (index == -1) {
+      print('❌ [NAVIGATE] Phase ID $phaseId not found in list');
+      return;
+    }
+
+    print('🎯 [NAVIGATE] Moving to phase ID $phaseId at index $index');
+    currentPhaseIndex.value = index;
+    realCurrentPhaseId.value = phaseId;
+
+    // Save to storage
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('current_phase_id', phaseId);
+    print('💾 [NAVIGATE] Saved phase ID: $phaseId');
+
+    startTimerForCurrentPhase();
+  }
+}
+
+

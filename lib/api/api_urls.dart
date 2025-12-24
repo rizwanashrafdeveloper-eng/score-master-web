@@ -57,7 +57,7 @@ class ApiEndpoints {
   static String gameFormatPhases(int sessionId) => '$baseUrl/questions/session/$sessionId/game-format';
 
   static const String userAdminFacilitator = '$baseUrl/auth/users';
-
+  static const String evaluateResponse = '$baseUrl/evaluation/evaluate';
   // -------------------- PLAYER SCORES --------------------
   static String playerScore(int playerId, int questionId) =>
       '$baseUrl/scores/player/$playerId/question/$questionId';

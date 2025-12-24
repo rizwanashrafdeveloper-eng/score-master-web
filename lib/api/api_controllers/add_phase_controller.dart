@@ -29,7 +29,7 @@ class AddPhaseController extends GetxController {
   var errorMessage = ''.obs;
 
   // Dropdown options
-  final scoringTypeOptions = ['HYBRID', 'AI', 'HUBRID'].obs;
+  final scoringTypeOptions = ['HYBRID', 'AI', 'Mannual'].obs;
   final difficultyOptions = ['EASY', 'MEDIUM', 'HARD'].obs;final challengeTypeOptions = [
     'MCQ',
     'OPEN_ENDED',

@@ -4,6 +4,93 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefServices {
   static final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+// Add to your SharedPrefServices class:
+// Add these methods to your existing SharedPrefServices class:
+
+// User Name methods (you have setUserName already, add getUserName)
+  static Future<String?> getUserName() async {
+    final prefs = await _prefs;
+    return prefs.getString('userName');
+  }
+
+// User Email methods
+  static Future<String?> getUserEmail() async {
+    final prefs = await _prefs;
+    return prefs.getString('userEmail');
+  }
+
+  static Future<void> saveUserEmail(String email) async {
+    final prefs = await _prefs;
+    await prefs.setString('userEmail', email);
+  }
+
+// Language methods
+  static Future<String?> getLanguageCode() async {
+    final prefs = await _prefs;
+    return prefs.getString('languageCode');
+  }
+
+  // In SharedPrefServices class, update this method:
+  static Future<void> saveLanguage(String languageCode, [String? countryCode]) async {
+    final prefs = await _prefs;
+    await prefs.setString('languageCode', languageCode);
+    if (countryCode != null) {
+      await prefs.setString('countryCode', countryCode);
+    }
+  }
+
+// Alias for saveUserName to match your existing code
+  static Future<void> saveUserName(String name) async {
+    await setUserName(name); // This calls your existing setUserName method
+  }
+  static Future<void> saveCurrentPhaseInfo(int phaseId, String phaseName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('current_phase_id', phaseId);
+    await prefs.setString('current_phase_name', phaseName);
+    print('💾 Saved phase info: id=$phaseId, name=$phaseName');
+  }
+
+  static Future<String?> getCurrentPhaseName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('current_phase_name');
+  }
+
+  static Future<Map<String, dynamic>> getSessionContext() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'sessionId': prefs.getInt('session_id'),
+      'facilitatorId': prefs.getInt('facilitator_id'),
+      'phaseId': prefs.getInt('current_phase_id'),
+      'phaseName': prefs.getString('current_phase_name'),
+    };
+  }
+  static Future<void> saveSessionAndPhaseInfo({
+    required int sessionId,
+    required int phaseId,
+    required int facilitatorId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('current_session_id', sessionId);
+    await prefs.setInt('current_phase_id', phaseId);
+    await prefs.setInt('current_facilitator_id', facilitatorId);
+    print('💾 Saved session/phase info: session=$sessionId, phase=$phaseId, facilitator=$facilitatorId');
+  }
+
+  static Future<int?> getCurrentSessionId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('current_session_id');
+  }
+
+  static Future<int?> getCurrentPhaseId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('current_phase_id');
+  }
+
+  static Future<int?> getCurrentFacilitatorId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('current_facilitator_id');
+  }
+
 
   // ✅ Save auth token
   static Future<void> setAuthToken(String token) async {
@@ -20,6 +107,7 @@ class SharedPrefServices {
   // ✅ Save user profile (as JSON)
   static Future<void> saveUserProfile(Map<String, dynamic> user) async {
     final prefs = await _prefs;
+
     await prefs.setString('userProfile', jsonEncode(user));
   }
 

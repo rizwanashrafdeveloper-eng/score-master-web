@@ -61,8 +61,8 @@ class PlayerAnalyasis extends StatelessWidget {
                       text: "78",
                       fontFamily: "giory",
                       fontSize: 24.sp,
-                      width: 45.w,
-                      height: 40.h,
+                      //width: 45.w,
+                     // height: 40.h,
                       color: AppColors.orangeColor,
                     )
                   ],
@@ -89,8 +89,8 @@ class PlayerAnalyasis extends StatelessWidget {
                     UseableContainer(
                       text: "high".tr,
                       fontSize: 24.sp,
-                      width: 80.w,
-                      height: 40.h,
+                    //  width: 80.w,
+//height: 40.h,
                       color: AppColors.forwardColor,
                     ),
                   ],

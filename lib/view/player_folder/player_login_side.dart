@@ -134,7 +134,7 @@ class _PlayerLoginSideState extends State<PlayerLoginSide> {
                               LoginTextfield(
                                 controller: nicknameController,
                                 text: "Enter Nick Name",
-                                height: 120.h,
+                              //  height: 120.h,
                                 fontsize: 35.sp,
                               ),
                               SizedBox(height: 20.h),

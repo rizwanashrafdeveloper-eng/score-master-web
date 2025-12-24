@@ -70,13 +70,13 @@ class UserManagementScreen extends StatelessWidget {
                     children: [
                       Center(
                         child: BoldText(
-                          text: "Users Management",
+                          text: "users_management".tr,
                           fontSize: 48.sp,
                           selectionColor: AppColors.blueColor,
                         ),
                       ),
                       MainText(
-                        text: "Securely manage roles, permissions, and\naccess.",
+                        text: "secure_manage_roles".tr,
                         fontSize: 22.sp,
                         textAlign: TextAlign.center,
                       )
@@ -112,35 +112,55 @@ class UserManagementScreen extends StatelessWidget {
                           SizedBox(height: 20.h),
 
                           /// ✅ Search Field
-                          Container(
-                            width: double.infinity,
-                            height: 100.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              border: Border.all(color: AppColors.searchBorder, width: 2.7.w),
-                              borderRadius: BorderRadius.circular(25.r),
-                            ),
-                            child: TextFormField(
-                              cursorColor: AppColors.blackColor,
-                              onChanged: (v) => userController.searchText.value = v,
-                              decoration: InputDecoration(
-                                hintText: "search_players".tr,
-                                prefixIcon: Padding(
-                                  padding: EdgeInsets.only(left: 10.w),
-                                  child: Icon(
-                                    Icons.search,
-                                    color: AppColors.forwardColor,
-                                    size: 50.sp,
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              final double width = constraints.maxWidth;
+
+                              final double fieldHeight =
+                              width < 600 ? 48 : width < 1024 ? 60 : 72;
+
+                              final double iconSize =
+                              width < 600 ? 20 : width < 1024 ? 26 : 30;
+
+                              final double fontSize =
+                              width < 600 ? 14 : width < 1024 ? 16 : 18;
+
+                              return Container(
+                                width: double.infinity,
+                                height: fieldHeight,
+                                decoration: BoxDecoration(
+                                  color: AppColors.whiteColor,
+                                  border: Border.all(
+                                    color: AppColors.searchBorder,
+                                    width: 1.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(fieldHeight / 2),
+                                ),
+                                child: TextFormField(
+                                  cursorColor: AppColors.blackColor,
+                                  onChanged: (v) => userController.searchText.value = v,
+                                  style: TextStyle(fontSize: fontSize),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: fieldHeight / 3,
+                                    ),
+                                    hintText: "search_players".tr,
+                                    hintStyle: TextStyle(fontSize: fontSize),
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      color: AppColors.forwardColor,
+                                      size: iconSize,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(fieldHeight / 2),
+                                      borderSide: BorderSide.none,
+                                    ),
                                   ),
                                 ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.r),
-                                  borderSide: BorderSide.none,
-                                ),
-                                hintStyle: TextStyle(fontSize: 30.sp),
-                              ),
-                            ),
+                              );
+                            },
                           ),
+
 
                           SizedBox(height: 30.h),
 
@@ -169,9 +189,10 @@ class UserManagementScreen extends StatelessWidget {
                               return Padding(
                                 padding: EdgeInsets.only(top: 60.h),
                                 child: Text(
-                                  "No users found",
+                                  "no_users_found".tr, // ✅ Changed from "No users found"
                                   style: TextStyle(fontSize: 30.sp, color: AppColors.blackColor),
                                 ),
+
                               );
                             }
 

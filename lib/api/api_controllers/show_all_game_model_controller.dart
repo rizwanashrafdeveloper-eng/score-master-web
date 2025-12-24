@@ -93,15 +93,15 @@ class GamesController extends GetxController {
       } else {
         print("❌ Failed to fetch games → ${response.statusCode}: ${response.body}");
         hasError.value = true;
-        errorMessage.value = 'Failed to load games: ${response.statusCode}';
-        Get.snackbar('Error', 'Failed to fetch games: ${response.statusCode}');
+        errorMessage.value = 'failed_load_games'.tr + ': ${response.statusCode}';
+        Get.snackbar('error'.tr, 'error_fetching_games'.tr + ' ${response.statusCode}');
       }
     } catch (e) {
       print("❌ Exception in fetchAllGames → $e");
       print("❌ Full Response Body on Error: ${response?.body ?? 'No response'}");
       hasError.value = true;
-      errorMessage.value = 'Network error occurred';
-      Get.snackbar('Error', 'Error fetching games: $e');
+      errorMessage.value = 'network_error'.tr;
+      Get.snackbar('error'.tr, 'error_fetching_games'.tr + ': $e');
     } finally {
       isLoading.value = false;
     }

@@ -77,13 +77,13 @@ class UserFacilitateDetailedScree extends StatelessWidget {
                       children: [
                         Center(
                           child: BoldText(
-                            text: "Users Management",
+                            text: "users_management".tr,
                             fontSize: 48.sp,
                             selectionColor: AppColors.blueColor,
                           ),
                         ),
                         MainText(
-                          text: "Securely manage roles, permissions, and\naccess.",
+                          text: "secure_manage_roles".tr,
                           fontSize: 22.sp,
                           textAlign: TextAlign.center,
                         ),
@@ -138,12 +138,12 @@ class UserFacilitateDetailedScree extends StatelessWidget {
                             ),
                           ),
                           BoldText(
-                            text: playerInfo?.name ?? "Unknown User",
+                            text: playerInfo?.name ?? "unknown_user".tr,
                             fontSize: 30.sp,
                             selectionColor: AppColors.blueColor,
                           ),
                           MainText(
-                            text: playerInfo?.email ?? "No email",
+                            text: playerInfo?.email ?? "no_email".tr,
                             fontSize: 26.sp,
                             height: 1.4,
                           ),
@@ -188,13 +188,13 @@ class UserFacilitateDetailedScree extends StatelessWidget {
                               children: [
                                 _statBox(
                                   value: "${sessionStats?.totalSessions ?? 0}",
-                                  label: recentSessions.isNotEmpty ? "Sessions Led" : "Total Sessions",
+                                  label: recentSessions.isNotEmpty ? "sessions_led".tr : "total_sessions".tr,
                                   color: AppColors.redColor,
                                 ),
                                 SizedBox(width: 10.w),
                                 _statBox(
                                   value: "${recentSessions.length}",
-                                  label: recentSessions.isNotEmpty ? "Managed\nPlayers" : "Active\nSessions",
+                                  label: recentSessions.isNotEmpty ? "managed_players".tr : "active_sessions".tr,
                                   color: AppColors.forwardColor,
                                 ),
                                 SizedBox(width: 10.w),
@@ -202,7 +202,7 @@ class UserFacilitateDetailedScree extends StatelessWidget {
                                   value: recentSessions.isNotEmpty
                                       ? "${sessionStats?.avgScore?.toStringAsFixed(1) ?? '0'}%"
                                       : "0%",
-                                  label: "Success\nRate",
+                                  label: "success_rate".tr,
                                   color: AppColors.redColor,
                                 ),
                               ],
@@ -239,9 +239,9 @@ class UserFacilitateDetailedScree extends StatelessWidget {
                                     right: -30.w,
                                     color2: AppColors.forwardColor,
                                     color1: AppColors.orangeColor,
-                                    heading: session.sessionName ?? "Unnamed Session",
+                                    heading: session.sessionName ?? "unnamed_session".tr,
                                     text1: "Phase ${session.totalPhases ?? 0}",
-                                    text2: session.status ?? "active",
+                                    text2: session.status ?? "active".tr,
                                     text6: "${session.rank ?? ''}",
                                     smallImage: Appimages.Crown,
                                     description: session.sessionDescription ?? "",
@@ -253,7 +253,7 @@ class UserFacilitateDetailedScree extends StatelessWidget {
                               }).toList(),
                             ),
                           )
-                              : _buildNoSessionsWidget("No sessions facilitated yet"),
+                              : _buildNoSessionsWidget("no_sessions_facilitated".tr),
 
                           // SizedBox(height: 40.h),
                           // LoginButton(
@@ -350,7 +350,7 @@ Widget _buildNoSessionsWidget(String message) {
         ),
         SizedBox(height: 15.h),
         MainText(
-          text: "When sessions are available, they will appear here",
+          text: "sessions_will_appear".tr,
           fontSize: 24.sp,
           color: AppColors.greyColor.withOpacity(0.8),
           textAlign: TextAlign.center,

@@ -36,8 +36,26 @@ import 'package:scorer_web/view/start_Screen1.dart';
 import 'package:scorer_web/view/start_Screen3.dart';
 import 'package:scorer_web/view/start_screen2.dart';
 
+import '../view/FacilitatorFolder/vew_responses_screen.dart';
+import '../view/edit_profile_screen_web.dart';
+import '../view/notification_screen_web.dart';
+import '../view/settings_screen_web.dart';
+
 class AppRoutes {
   static getAppRoutes() => [
+
+    GetPage(
+      name: RouteName.settingsScreen,
+      page: () => SettingsScreenWeb(),
+    ),
+    GetPage(
+      name: RouteName.notificationScreen,
+      page: () => NotificationScreenWeb(),
+    ),
+    GetPage(
+      name: RouteName.editProfileScreen,
+      page: () => EditProfileScreenWeb(),
+    ),
     GetPage(
       name: RouteName.splashScreen,
       page: () => SplashScreen(),
@@ -115,7 +133,7 @@ class AppRoutes {
     ),
     GetPage(
       name: RouteName.viewResponsesScreen,
-      page: () => ViewResponseScreen(),
+      page: () => ViewResponsesScreen(),
       transition: Transition.cupertino,
     ),
     GetPage(

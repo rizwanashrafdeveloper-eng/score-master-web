@@ -423,7 +423,7 @@ class AIQuestionDialog extends StatelessWidget {
         LoginTextfield(
           text: 'e.g., Leadership in crisis situations, Team collaboration strategies',
           fontsize: 18.sp,
-          height: 120.h,
+         // height: 120.h,
           controller: topicController,
           maxLines: 3,
         ),

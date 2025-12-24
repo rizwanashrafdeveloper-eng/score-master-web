@@ -1,9 +1,8 @@
+// active_schedule_controller.dart
 import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import '../../shared_preference/shared_preference.dart';
 import '../api_models/schedule_and_active_session_model.dart';
@@ -11,69 +10,36 @@ import '../api_urls.dart';
 
 class ActiveAndSessionController extends GetxController {
   final isLoading = false.obs;
+  final sessionLoading = <int, bool>{}.obs; // Track loading per session
   final scheduleAndActiveSession = ScheduleAndActiveSessionModel().obs;
   final selectedIndex = 0.obs;
-
-  // ✅ NEW: Search query
   final searchQuery = ''.obs;
-  /// ✅ Fetch all sessions (Admin)
-  Future<void> fetchSessions() async {
-    try {
-      isLoading.value = true;
-      log("🚀 [fetchSessions] Fetching all sessions for Admin...");
 
-      final token = await SharedPrefServices.getAuthToken() ?? '';
-      final url = Uri.parse('${ApiEndpoints.baseUrl}/sessions/all');
-
-      log("🌐 Fetching from $url");
-
-      final response = await http.get(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          if (token.isNotEmpty) 'Authorization': 'Bearer $token',
-        },
-      );
-
-      log("📥 Response [${response.statusCode}] => ${response.body}");
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        scheduleAndActiveSession.value =
-            ScheduleAndActiveSessionModel.fromJson(jsonData);
-        log("✅ Sessions parsed successfully");
-      } else {
-        log("⚠️ Failed to load sessions (${response.statusCode})");
-        Get.snackbar(
-          'Error',
-          'Failed to load sessions (${response.statusCode})',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e, s) {
-      log("❌ Exception in fetchSessions: $e");
-      log("Stacktrace: $s");
-      Get.snackbar(
-        'Error',
-        'Something went wrong: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-      log("✅ [fetchSessions] Done loading");
-    }
-  }
+  /// ✅ NEW: Track last action time to prevent rapid clicks
+  final lastActionTime = <int, DateTime>{}.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchSessions();
+    fetchScheduleAndActiveSessions();
   }
-  // ✅ Get filtered active sessions based on search
+
+  /// ✅ Check if we should allow another action (prevent rapid clicks)
+  bool canPerformAction(int sessionId) {
+    final lastTime = lastActionTime[sessionId];
+    if (lastTime == null) return true;
+
+    final now = DateTime.now();
+    final diff = now.difference(lastTime);
+    return diff.inSeconds >= 2; // Minimum 2 seconds between actions
+  }
+
+  /// ✅ Update last action time
+  void updateLastActionTime(int sessionId) {
+    lastActionTime[sessionId] = DateTime.now();
+  }
+
+  /// ✅ Get filtered active sessions based on search
   List<ActiveSessions> get filteredActiveSessions {
     final sessions = scheduleAndActiveSession.value.activeSessions ?? [];
     if (searchQuery.value.isEmpty) return sessions;
@@ -89,7 +55,7 @@ class ActiveAndSessionController extends GetxController {
     }).toList();
   }
 
-  // ✅ Get filtered scheduled sessions based on search
+  /// ✅ Get filtered scheduled sessions based on search
   List<ScheduledSessions> get filteredScheduledSessions {
     final sessions = scheduleAndActiveSession.value.scheduledSessions ?? [];
     if (searchQuery.value.isEmpty) return sessions;
@@ -105,157 +71,95 @@ class ActiveAndSessionController extends GetxController {
     }).toList();
   }
 
-  Future<void> fetchScheduleAndActiveSessions() async {
-    print("[fetchScheduleAndActiveSessions] Started fetching sessions...");
+  /// ✅ Optimized fetch with error handling
+  Future<void> fetchScheduleAndActiveSessions({bool showLoading = true}) async {
+    if (isLoading.value && showLoading) return;
+
     try {
-      isLoading.value = true;
-      print("[fetchScheduleAndActiveSessions] Loading state set to true");
+      if (showLoading) isLoading.value = true;
 
       final token = await SharedPrefServices.getAuthToken() ?? '';
       final url = ApiEndpoints.scheduleAndActiveSession;
-      print("[fetchScheduleAndActiveSessions] API URL -> $url");
 
       final response = await http.get(
-        Uri.parse(ApiEndpoints.scheduleAndActiveSession),
+        Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
           if (token.isNotEmpty) 'Authorization': 'Bearer $token',
         },
       );
-      print("[fetchScheduleAndActiveSessions] Response status: ${response.statusCode}");
-      print("[fetchScheduleAndActiveSessions] Response body: ${response.body}");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = jsonDecode(response.body);
-        print("[fetchScheduleAndActiveSessions] API Response Body: $jsonData");
-
         scheduleAndActiveSession.value = ScheduleAndActiveSessionModel.fromJson(jsonData);
-        print("[fetchScheduleAndActiveSessions] Parsed Model: ${scheduleAndActiveSession.value}");
+
+        // Clear all session loading states
+        sessionLoading.clear();
       } else {
-        print("[fetchScheduleAndActiveSessions] Error: Status Code -> ${response.statusCode}");
-        Get.snackbar(
-          'Error',
-          'Failed to fetch sessions: ${response.statusCode}',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        print("Error fetching sessions: ${response.statusCode}");
       }
     } catch (e) {
-      print("[fetchScheduleAndActiveSessions] Exception occurred: $e");
-      Get.snackbar(
-        'Error',
-        'An error occurred: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      print("Exception fetching sessions: $e");
     } finally {
-      isLoading.value = false;
-      print("[fetchScheduleAndActiveSessions] Loading state set to false ✅");
+      if (showLoading) {
+        isLoading.value = false;
+      }
     }
   }
 
   void changeTabIndex(int index) {
-    print("[changeTabIndex] Changing index from ${selectedIndex.value} → $index");
     selectedIndex.value = index;
   }
 
+  /// ✅ Update session status locally (immediate UI update)
   void updateSessionStatus(int sessionId, String newStatus) {
-    // Find the session in the list and update status locally
-    final index = scheduleAndActiveSession.value.activeSessions
+    // Find in active sessions
+    var index = scheduleAndActiveSession.value.activeSessions
         ?.indexWhere((s) => s.id == sessionId);
 
     if (index != null && index != -1) {
       scheduleAndActiveSession.value.activeSessions![index].status = newStatus;
-      scheduleAndActiveSession.refresh(); // Trigger UI update
-      print("🔄 Updated session $sessionId status to $newStatus locally.");
+      scheduleAndActiveSession.refresh();
+      return;
+    }
+
+    // Find in scheduled sessions (if starting early)
+    index = scheduleAndActiveSession.value.scheduledSessions
+        ?.indexWhere((s) => s.id == sessionId);
+
+    if (index != null && index != -1) {
+      // Remove from scheduled and add to active
+      final session = scheduleAndActiveSession.value.scheduledSessions![index];
+      scheduleAndActiveSession.value.scheduledSessions!.removeAt(index);
+
+      scheduleAndActiveSession.value.activeSessions ??= [];
+      scheduleAndActiveSession.value.activeSessions!.add(
+        ActiveSessions(
+          id: session.id,
+          teamTitle: session.teamTitle,
+          description: session.description,
+          totalPlayers: session.totalPlayers,
+          totalPhases: session.totalPhases,
+          remainingTime: 0,
+          status: 'ACTIVE',
+        ),
+      );
+
+      scheduleAndActiveSession.refresh();
     }
   }
 
+  /// ✅ Set session loading state
+  void setSessionLoading(int sessionId, bool loading) {
+    if (loading) {
+      sessionLoading[sessionId] = true;
+    } else {
+      sessionLoading.remove(sessionId);
+    }
+  }
 
+  /// ✅ Check if specific session is loading
+  bool isSessionLoading(int sessionId) {
+    return sessionLoading[sessionId] == true;
+  }
 }
-
-
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
-//
-// import '../../shared_preferences/shared_preferences.dart';
-// import '../api_models/schedule_and_active_session_model.dart';
-//
-// import '../api_urls.dart';
-// import 'session_action_controller.dart';
-//
-// class ActiveAndSessionController extends GetxController {
-//   final isLoading = false.obs;
-//   final scheduleAndActiveSession = ScheduleAndActiveSessionModel().obs;
-//
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     fetchScheduleAndActiveSessions();
-//   }
-//
-//   /// Fetch all scheduled and active sessions for the admin
-//   Future<void> fetchScheduleAndActiveSessions() async {
-//     try {
-//       isLoading.value = true;
-//       final token = await SharedPrefServices.getAuthToken() ?? '';
-//
-//       final url = ApiEndpoints.scheduleAndActiveSession;
-//       print('[ActiveAndSessionController] Fetching sessions from: $url');
-//       print('[ActiveAndSessionController] Using token: ${token.isNotEmpty ? "YES" : "NO"}');
-//
-//       final headers = <String, String>{
-//         'Content-Type': 'application/json',
-//         if (token.isNotEmpty) 'Authorization': 'Bearer $token',
-//       };
-//
-//       final response = await http.get(Uri.parse(url), headers: headers);
-//
-//       print('[ActiveAndSessionController] Status: ${response.statusCode}');
-//       if (response.statusCode == 200) {
-//         final jsonData = jsonDecode(response.body);
-//         scheduleAndActiveSession.value = ScheduleAndActiveSessionModel.fromJson(jsonData);
-//
-//         // ✅ sync session statuses to SessionActionController
-//         updateSessionStatuses();
-//
-//         print('[ActiveAndSessionController] ✅ Sessions fetched successfully');
-//       } else {
-//         print('[ActiveAndSessionController] ❌ Failed: ${response.statusCode}');
-//       }
-//     } catch (e) {
-//       print('[ActiveAndSessionController] ⚠️ Exception: $e');
-//     } finally {
-//       isLoading.value = false;
-//     }
-//   }
-//
-//   /// Sync session statuses with SessionActionController
-//   void updateSessionStatuses() {
-//     if (Get.isRegistered<SessionActionController>()) {
-//       final sessionController = Get.find<SessionActionController>();
-//       sessionController.sessionStatusMap.clear();
-//
-//       // Add active sessions
-//       scheduleAndActiveSession.value.activeSessions?.forEach((session) {
-//         if (session.id != null) {
-//           sessionController.sessionStatusMap[session.id!] = session.status ?? 'ACTIVE';
-//         }
-//       });
-//
-//       // Add scheduled sessions
-//       scheduleAndActiveSession.value.scheduledSessions?.forEach((session) {
-//         if (session.id != null) {
-//           sessionController.sessionStatusMap[session.id!] = session.status ?? 'SCHEDULED';
-//         }
-//       });
-//
-//       sessionController.update();
-//       print('[ActiveAndSessionController] 🔄 Session statuses synced');
-//     }
-//   }
-// }

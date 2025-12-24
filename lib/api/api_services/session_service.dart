@@ -45,7 +45,7 @@ class SessionService {
       developer.log('API Response Status: ${response.statusCode}', name: 'SessionService');
       developer.log('API Response Body: ${response.body}', name: 'SessionService');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = json.decode(response.body);
         developer.log('Parsed JSON: $jsonData', name: 'SessionService'); // Log JSON
         return SessionModel.fromJson(jsonData);

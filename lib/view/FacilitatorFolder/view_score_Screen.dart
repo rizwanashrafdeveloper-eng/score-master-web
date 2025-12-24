@@ -157,7 +157,7 @@ class ViewScoreScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       UseableContainer(
-                        height: 61.h, // ScreenUtil().setHeight(28)
+                        //height: 61.h, // ScreenUtil().setHeight(28)
                                 
                         text: "submitted".tr,
                      fontSize: 20.sp,
@@ -169,8 +169,8 @@ class ViewScoreScreen extends StatelessWidget {
                         text: "94",
                         fontFamily: "giory",
                         fontSize: 35.sp, // ScreenUtil().setSp(14)
-                        width: 83.w, // ScreenUtil().setWidth(37)
-                        height: 61.h, // ScreenUtil().setHeight(28)
+                        //width: 83.w, // ScreenUtil().setWidth(37)
+                       // height: 61.h, // ScreenUtil().setHeight(28)
                         color: AppColors.orangeColor,
                       )
                     ],

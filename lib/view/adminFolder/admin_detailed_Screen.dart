@@ -35,231 +35,234 @@ class AdminDetailedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GradientBackground(
-        child: Column(
-          children: [
-            CustomAppbar(),
-            SizedBox(height: 56.h),
-
-            GradientColor(
-              height: 200.h,
-              child: Container(
-                width: 794.w,
-                height: 235.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40.r),
-                    topRight: Radius.circular(40.r),
-                  ),
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      top: 50.h,
-                      left: -40.w,
-                      child: ForwardButtonContainer(
-                        imageH: 20.h,
-                        imageW: 23.5.w,
-                        height1: 90.h,
-                        height2: 65.h,
-                        width1: 90.w,
-                        width2: 65.w,
-                        image: Appimages.arrowback,
-                        onTap: () => Get.back(),
-                      ),
-                    ),
-                    Positioned(
-                      top: -140,
-                      right: 312.w,
-                      left: 312.w,
-                      child: CustomStackImage(
-                        image: Appimages.prince2,
-                        text: "Administrator",
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: BoldText(
-                            text: "Users Management",
-                            fontSize: 48.sp,
-                            selectionColor: AppColors.blueColor,
-                          ),
-                        ),
-                        MainText(
-                          text: "Securely manage roles, permissions, and\naccess.",
-                          fontSize: 22.sp,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-
-            Expanded(
-              child: GradientColor(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomAppbar(),
+              SizedBox(height: 56.h),
+          
+              GradientColor(
+                height: 200.h,
                 child: Container(
                   width: 794.w,
+                  height: 235.h,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(40.r),
-                      bottomRight: Radius.circular(40.r),
+                      topLeft: Radius.circular(40.r),
+                      topRight: Radius.circular(40.r),
                     ),
                   ),
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      scrollbars: false,
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        top: 50.h,
+                        left: -40.w,
+                        child: ForwardButtonContainer(
+                          imageH: 20.h,
+                          imageW: 23.5.w,
+                          height1: 90.h,
+                          height2: 65.h,
+                          width1: 90.w,
+                          width2: 65.w,
+                          image: Appimages.arrowback,
+                          onTap: () => Get.back(),
+                        ),
+                      ),
+                      Positioned(
+                        top: -140,
+                        right: 312.w,
+                        left: 312.w,
+                        child: CustomStackImage(
+                          image: Appimages.prince2,
+                          text: "administrator".tr
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Center(
-                            child: Image.asset(
-                              Appimages.prince2,
-                              width: 197.w,
-                              height: 263.h,
-                              fit: BoxFit.contain,
+                            child: BoldText(
+                              text: "users_management".tr,
+                              fontSize: 48.sp,
+                              selectionColor: AppColors.blueColor,
                             ),
-                          ),
-                          BoldText(
-                            text: userName,
-                            fontSize: 30.sp,
-                            selectionColor: AppColors.blueColor,
                           ),
                           MainText(
-                            text: userEmail,
-                            fontSize: 26.sp,
-                            height: 1.4,
+                            text: "secure_manage_roles".tr,
+                            fontSize: 22.sp,
+                            textAlign: TextAlign.center,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              MainText(
-                                text: "last_login".tr,
-                                fontSize: 26.sp,
-                                color: AppColors.redColor,
-                              ),
-                              SizedBox(width: 3.w),
-                              Container(
-                                width: 17.w,
-                                height: 17.h,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.redColor,
-                                ),
-                              ),
-                              SizedBox(width: 3.w),
-                              MainText(
-                                text: joinDate,
-                                fontSize: 26.sp,
-                                color: AppColors.redColor,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 30.h),
-                          UseableContainer(
-                            text: "active".tr,
-                            color: AppColors.forwardColor,
-                          ),
-                          SizedBox(height: 41.h),
-
-                          // Stats Section
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 74.w),
-                            child: Row(
-                              children: [
-                                _statBox(
-                                  value: "47",
-                                  label: "sessions_led".tr,
-                                  color: AppColors.redColor,
-                                ),
-                                SizedBox(width: 10.w),
-                                _statBox(
-                                  value: "285",
-                                  label: "Manage\nPlayers".tr,
-                                  color: AppColors.forwardColor,
-                                ),
-                                SizedBox(width: 10.w),
-                                _statBox(
-                                  value: "96%",
-                                  label: "Success\nRate".tr,
-                                  color: AppColors.redColor,
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 40.h),
-
-                          AccountInfoClumn(
-                            email: userEmail,
-                            phone: userPhone,
-                            joinDate: joinDate,
-                          ),
-
-                          // Admin-specific sections
-                          SizedBox(height: 30.h),
-                          _buildRecentActivity(),
-                          SizedBox(height: 30.h),
-                          _buildCurrentPermissions(),
-                          SizedBox(height: 30.h),
-
-                          BoldText(
-                            text: "recent_sessions".tr,
-                            selectionColor: AppColors.blueColor,
-                            fontSize: 30.sp,
-                          ),
-
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 40.w),
-                            child: Column(
-                              children: [
-                                CustomDashboardContainer(
-                                  mainWidth: double.infinity,
-                                  right: -30.w,
-                                  color2: AppColors.forwardColor,
-                                  color1: AppColors.orangeColor,
-                                  heading: "Team Building Workshop",
-                                  text1: "Phase 2",
-                                  text2: "active".tr,
-                                  text6: "2nd Position",
-                                  smallImage: Appimages.Crown,
-                                  description: "Eranove Odyssey sessions immerse teams in fast-paced, collaborative challenges with real-time scoring and progression.",
-                                  icon1: Icons.play_arrow,
-                                  text5: "12 Players",
-                                  isshow: true,
-                                ),
-                                SizedBox(height: 18.h),
-                                CustomDashboardContainer(
-                                  mainWidth: double.infinity,
-                                  right: -30.w,
-                                  color2: AppColors.forwardColor,
-                                  color1: AppColors.orangeColor,
-                                  heading: "Team Building Workshop",
-                                  text1: "Phase 2",
-                                  text2: "active".tr,
-                                  text6: "2nd Position",
-                                  smallImage: Appimages.Crown,
-                                  description: "Eranove Odyssey sessions immerse teams in fast-paced, collaborative challenges with real-time scoring and progression.",
-                                  icon1: Icons.play_arrow,
-                                  text5: "12 Players",
-                                  isshow: true,
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 100.h),
                         ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+          
+              Expanded(
+                child: GradientColor(
+                  child: Container(
+                    width: 794.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(40.r),
+                        bottomRight: Radius.circular(40.r),
+                      ),
+                    ),
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        scrollbars: false,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: Image.asset(
+                                Appimages.prince2,
+                                width: 197.w,
+                                height: 263.h,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            BoldText(
+                              text: userName,
+                              fontSize: 30.sp,
+                              selectionColor: AppColors.blueColor,
+                            ),
+                            MainText(
+                              text: userEmail,
+                              fontSize: 26.sp,
+                              height: 1.4,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MainText(
+                                  text: "last_login".tr,
+                                  fontSize: 26.sp,
+                                  color: AppColors.redColor,
+                                ),
+                                SizedBox(width: 3.w),
+                                Container(
+                                  width: 17.w,
+                                  height: 17.h,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.redColor,
+                                  ),
+                                ),
+                                SizedBox(width: 3.w),
+                                MainText(
+                                  text: joinDate,
+                                  fontSize: 26.sp,
+                                  color: AppColors.redColor,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 30.h),
+                            UseableContainer(
+                              text: "active".tr,
+                              color: AppColors.forwardColor,
+                            ),
+                            SizedBox(height: 41.h),
+          
+                            // Stats Section
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 74.w),
+                              child: Row(
+                                children: [
+                                  _statBox(
+                                    value: "47",
+                                    label: "sessions_led".tr,
+                                    color: AppColors.redColor,
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  _statBox(
+                                    value: "285",
+                                    label: "Manage\nPlayers".tr,
+                                    color: AppColors.forwardColor,
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  _statBox(
+                                    value: "96%",
+                                    label: "Success\nRate".tr,
+                                    color: AppColors.redColor,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 40.h),
+          
+                            AccountInfoClumn(
+                              email: userEmail,
+                              phone: userPhone,
+                              joinDate: joinDate,
+                            ),
+          
+                            // Admin-specific sections
+                            SizedBox(height: 30.h),
+                            _buildRecentActivity(),
+                            SizedBox(height: 30.h),
+                            _buildCurrentPermissions(),
+                            SizedBox(height: 30.h),
+          
+                            BoldText(
+                              text: "recent_sessions".tr,
+                              selectionColor: AppColors.blueColor,
+                              fontSize: 30.sp,
+                            ),
+          
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40.w),
+                              child: Column(
+                                children: [
+                                  CustomDashboardContainer(
+                                    mainWidth: double.infinity,
+                                    right: -30.w,
+                                    color2: AppColors.forwardColor,
+                                    color1: AppColors.orangeColor,
+                                    heading: "Team Building Workshop",
+                                    text1: "Phase 2",
+                                    text2: "active".tr,
+                                    text6: "2nd Position",
+                                    smallImage: Appimages.Crown,
+                                    description: "Eranove Odyssey sessions immerse teams in fast-paced, collaborative challenges with real-time scoring and progression.",
+                                    icon1: Icons.play_arrow,
+                                    text5: "12 Players",
+                                    isshow: true,
+                                  ),
+                                  SizedBox(height: 18.h),
+                                  CustomDashboardContainer(
+                                    mainWidth: double.infinity,
+                                    right: -30.w,
+                                    color2: AppColors.forwardColor,
+                                    color1: AppColors.orangeColor,
+                                    heading: "team_building_workshop".tr,
+                                    text1: "phase_2".tr, // ✅ Changed from "Phase 2"
+          
+                                    text2: "active".tr, // ✅ Already updated above
+                                    text6: "2nd_position".tr, // ✅ Changed from "2nd Position"
+                                    smallImage: Appimages.Crown,
+                                    description: "eranove_description".tr, // ✅ Changed from "Eranove Odyssey sessions immerse teams..."
+                                    icon1: Icons.play_arrow,
+                                    text5: "12_players".tr, // ✅ Changed from "12 Players"
+                                    isshow: true,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 100.h),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -319,19 +322,19 @@ class AdminDetailedScreen extends StatelessWidget {
               UseableTextrow(
                 height: 1,
                 color: AppColors.forwardColor,
-                text: "Alex submitted response • 1m ago",
+                text: "alex_submitted".tr,
               ),
               SizedBox(height: 10.h),
               UseableTextrow(
                 height: 1,
                 color: AppColors.forwardColor2,
-                text: "Sarah joined team discussion • 2m ago",
+                text: "sarah_joined".tr,
               ),
               SizedBox(height: 10.h),
               UseableTextrow(
                 height: 1,
                 color: AppColors.forwardColor3,
-                text: "Mike went inactive • 5m ago",
+                text: "mike_inactive".tr,
               ),
             ],
           ),

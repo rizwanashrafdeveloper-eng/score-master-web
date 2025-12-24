@@ -33,8 +33,10 @@ class Game2ScreenWeb extends StatefulWidget {
 
 class _Game2ScreenWebState extends State<Game2ScreenWeb> {
   final AddPhaseController addPhaseController = Get.put(AddPhaseController());
-  final FacilitatorsController facilitatorController = Get.put(FacilitatorsController());
-  final CreateGameController createGameController = Get.put(CreateGameController());
+  final FacilitatorsController facilitatorController = Get.put(
+      FacilitatorsController());
+  final CreateGameController createGameController = Get.put(
+      CreateGameController());
   final RxBool showPhaseSection = false.obs;
   final RxBool isLoading = false.obs;
 
@@ -82,20 +84,30 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
 
   List<String> validateFormFields() {
     List<String> errors = [];
-    if (addPhaseController.validateName(addPhaseController.nameController.text) != null) {
-      errors.add(addPhaseController.validateName(addPhaseController.nameController.text)!);
+    if (addPhaseController.validateName(
+        addPhaseController.nameController.text) != null) {
+      errors.add(addPhaseController.validateName(
+          addPhaseController.nameController.text)!);
     }
-    if (addPhaseController.validateDescription(addPhaseController.descriptionController.text) != null) {
-      errors.add(addPhaseController.validateDescription(addPhaseController.descriptionController.text)!);
+    if (addPhaseController.validateDescription(
+        addPhaseController.descriptionController.text) != null) {
+      errors.add(addPhaseController.validateDescription(
+          addPhaseController.descriptionController.text)!);
     }
-    if (addPhaseController.validateOrder(addPhaseController.orderController.text) != null) {
-      errors.add(addPhaseController.validateOrder(addPhaseController.orderController.text)!);
+    if (addPhaseController.validateOrder(
+        addPhaseController.orderController.text) != null) {
+      errors.add(addPhaseController.validateOrder(
+          addPhaseController.orderController.text)!);
     }
-    if (addPhaseController.validateTimeDuration(addPhaseController.timeDurationController.text) != null) {
-      errors.add(addPhaseController.validateTimeDuration(addPhaseController.timeDurationController.text)!);
+    if (addPhaseController.validateTimeDuration(
+        addPhaseController.timeDurationController.text) != null) {
+      errors.add(addPhaseController.validateTimeDuration(
+          addPhaseController.timeDurationController.text)!);
     }
-    if (addPhaseController.validateRequiredScore(addPhaseController.requiredScoreController.text) != null) {
-      errors.add(addPhaseController.validateRequiredScore(addPhaseController.requiredScoreController.text)!);
+    if (addPhaseController.validateRequiredScore(
+        addPhaseController.requiredScoreController.text) != null) {
+      errors.add(addPhaseController.validateRequiredScore(
+          addPhaseController.requiredScoreController.text)!);
     }
 
     return errors;
@@ -158,7 +170,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                           child: Center(
                             child: SvgPicture.asset(
                               Appimages.arrowback,
-                              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.white, BlendMode.srcIn),
                               width: 23.5.w,
                               height: 20.h,
                             ),
@@ -217,7 +230,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                                         ),
                                       ),
                                       child: Padding(
-                                        padding: EdgeInsets.only(left: 4.0, right: 10.0),
+                                        padding: EdgeInsets.only(
+                                            left: 4.0, right: 10.0),
                                         child: Text(
                                           "Game".tr,
                                           style: TextStyle(
@@ -254,14 +268,17 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                     ),
                   ),
                   child: Obx(() {
-                    if (isLoading.value && facilitatorController.facilitators.isEmpty) {
+                    if (isLoading.value &&
+                        facilitatorController.facilitators.isEmpty) {
                       return _buildLoadingState();
                     }
 
                     return ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                          scrollbars: false),
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 30.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 40.w, vertical: 30.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -282,7 +299,7 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                               child: LoginTextfield(
                                 text: "enter_game_name".tr,
                                 fontsize: 24.sp,
-                                height: 80.h,
+                                //   height: 80.h,
                                 onChanged: (value) {
                                   createGameController.name.value = value;
                                 },
@@ -295,18 +312,20 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                               width: 600.w,
                               child: LoginTextfield(
                                 text: "description".tr,
-                                height: 120.h,
+                                // height: 120.h,
                                 fontsize: 24.sp,
                                 maxLines: 4,
                                 onChanged: (value) {
-                                  createGameController.description.value = value;
+                                  createGameController.description.value =
+                                      value;
                                 },
                               ),
                             ),
                             SizedBox(height: 30.h),
 
                             // Default Time Container
-                            DefaultTimeContainer(controller: createGameController),
+                            DefaultTimeContainer(
+                                controller: createGameController),
                             SizedBox(height: 30.h),
 
                             // Facilitators Section
@@ -318,7 +337,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                             SizedBox(height: 30.h),
 
                             // Save Game Button
-                            Obx(() => createGameController.isCreatingGame.value
+                            Obx(() =>
+                            createGameController.isCreatingGame.value
                                 ? _buildLoadingButton()
                                 : LoginButton(
                               text: "save".tr,
@@ -341,7 +361,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                             SizedBox(height: 30.h),
 
                             // Phase Section (Conditional)
-                            Obx(() => showPhaseSection.value
+                            Obx(() =>
+                            showPhaseSection.value
                                 ? _buildPhaseSection()
                                 : const SizedBox()),
 
@@ -465,7 +486,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
             }
 
             // Show all facilitators when no search query, show filtered when searching
-            final facilitatorsToShow = facilitatorController.searchQuery.value.isEmpty
+            final facilitatorsToShow = facilitatorController.searchQuery.value
+                .isEmpty
                 ? facilitatorController.facilitators
                 : facilitatorController.filteredFacilitators;
 
@@ -531,7 +553,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
           MainText(
             text: facilitatorController.searchQuery.value.isEmpty
                 ? "No facilitators available in the system".tr
-                : "No matches for '${facilitatorController.searchQuery.value}'".tr,
+                : "No matches for '${facilitatorController.searchQuery.value}'"
+                .tr,
             fontSize: 14.sp,
             color: AppColors.greyColor,
             textAlign: TextAlign.center,
@@ -554,7 +577,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
         itemBuilder: (context, index) {
           final facilitator = facilitators[index];
           return Obx(() {
-            final isSelected = facilitatorController.selectedIds.contains(facilitator.id);
+            final isSelected = facilitatorController.selectedIds.contains(
+                facilitator.id);
             return ListTile(
               leading: CircleAvatar(
                 radius: 20.r,
@@ -578,7 +602,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
               ),
               trailing: Icon(
                 isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-                color: isSelected ? AppColors.forwardColor : AppColors.greyColor,
+                color: isSelected ? AppColors.forwardColor : AppColors
+                    .greyColor,
                 size: 24.r,
               ),
               onTap: () {
@@ -728,7 +753,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                   height: 50.h,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.w, vertical: 8.h),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20.r),
@@ -794,7 +820,7 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
           ishow: false,
           text: "Phase Name".tr,
           fontsize: 20.sp,
-          height: 70.h,
+          //height: 70.h,
           controller: addPhaseController.nameController,
           validator: addPhaseController.validateName,
         ),
@@ -805,7 +831,7 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
           ishow: false,
           text: "Phase Description".tr,
           fontsize: 20.sp,
-          height: 100.h,
+          // height: 100.h,
           maxLines: 3,
           controller: addPhaseController.descriptionController,
           validator: addPhaseController.validateDescription,
@@ -820,7 +846,7 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                 ishow: false,
                 text: "Order".tr,
                 fontsize: 20.sp,
-                height: 70.h,
+                // height: 70.h,
                 controller: addPhaseController.orderController,
                 validator: addPhaseController.validateOrder,
                 keyboardType: TextInputType.number,
@@ -832,7 +858,7 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
                 ishow: false,
                 text: "Time Duration (minutes)".tr,
                 fontsize: 20.sp,
-                height: 70.h,
+                //  height: 70.h,
                 controller: addPhaseController.timeDurationController,
                 validator: addPhaseController.validateTimeDuration,
                 keyboardType: TextInputType.number,
@@ -847,42 +873,43 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
           ishow: false,
           text: "Required Score".tr,
           fontsize: 20.sp,
-          height: 70.h,
+          // height: 70.h,
           controller: addPhaseController.requiredScoreController,
           validator: addPhaseController.validateRequiredScore,
           keyboardType: TextInputType.number,
         ),
-    // Scoring Type Dropdown
-    BoldText(
-    text: "Scoring Type".tr,
-    fontSize: 20.sp,
-    selectionColor: AppColors.blueColor,
-    ),
-    SizedBox(height: 8.h),
-    Obx(() => Container(
-    padding: EdgeInsets.symmetric(horizontal: 12.w),
-    decoration: BoxDecoration(
-    border: Border.all(color: Colors.grey),
-    borderRadius: BorderRadius.circular(12.r),
-    ),
-    child: DropdownButtonHideUnderline(
-    child: DropdownButton<String>(
-    isExpanded: true,
-    hint: Text("Select Scoring Type".tr),
-    value: addPhaseController.scoringType.value,
-    items: addPhaseController.scoringTypeOptions.map((type) {
-    return DropdownMenuItem(
-    value: type,
-    child: Text(type, style: TextStyle(fontSize: 18.sp)),
-    );
-    }).toList(),
-    onChanged: (value) {
-    addPhaseController.setScoringType(value);
-    },
-    ),
-    ),
-    )),
-    SizedBox(height: 20.h),
+        // Scoring Type Dropdown
+        BoldText(
+          text: "Scoring Type".tr,
+          fontSize: 20.sp,
+          selectionColor: AppColors.blueColor,
+        ),
+        SizedBox(height: 8.h),
+        Obx(() =>
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: Text("Select Scoring Type".tr),
+                  value: addPhaseController.scoringType.value,
+                  items: addPhaseController.scoringTypeOptions.map((type) {
+                    return DropdownMenuItem(
+                      value: type,
+                      child: Text(type, style: TextStyle(fontSize: 18.sp)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    addPhaseController.setScoringType(value);
+                  },
+                ),
+              ),
+            )),
+        SizedBox(height: 20.h),
 
 
 // Difficulty Dropdown
@@ -892,30 +919,31 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
           selectionColor: AppColors.blueColor,
         ),
         SizedBox(height: 8.h),
-        Obx(() => Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              hint: Text("Select Difficulty".tr),
-              value: addPhaseController.difficulty.value,
-              items: addPhaseController.difficultyOptions.map((level) {
-                return DropdownMenuItem(
-                  value: level,
-                  child: Text(level, style: TextStyle(fontSize: 18.sp)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                addPhaseController.setDifficulty(value);
-              },
-            ),
-          ),
-        )),
-        SizedBox(height: 16 ),
+        Obx(() =>
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: Text("Select Difficulty".tr),
+                  value: addPhaseController.difficulty.value,
+                  items: addPhaseController.difficultyOptions.map((level) {
+                    return DropdownMenuItem(
+                      value: level,
+                      child: Text(level, style: TextStyle(fontSize: 18.sp)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    addPhaseController.setDifficulty(value);
+                  },
+                ),
+              ),
+            )),
+        SizedBox(height: 16),
         // Challenge Type Selector
         ChallengeTypeSelector(
           availableTypes: addPhaseController.challengeTypeOptions,
@@ -935,10 +963,12 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
       ],
     );
   }
+
   Widget _buildPhaseActionButtons() {
     return Column(
       children: [
-        Obx(() => addPhaseController.isLoading.value
+        Obx(() =>
+        addPhaseController.isLoading.value
             ? _buildLoadingButton()
             : LoginButton(
           text: "Save Phase".tr,
@@ -979,7 +1009,8 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
               return;
             }
 
-            addPhaseController.setGameFormatId(createGameController.currentGameId.value);
+            addPhaseController.setGameFormatId(
+                createGameController.currentGameId.value);
 
             if (addPhaseController.validateDropdowns()) {
               await addPhaseController.submitPhase();
@@ -1009,13 +1040,6 @@ class _Game2ScreenWebState extends State<Game2ScreenWeb> {
     );
   }
 }
-
-
-
-
-
-
-
 
 
 //

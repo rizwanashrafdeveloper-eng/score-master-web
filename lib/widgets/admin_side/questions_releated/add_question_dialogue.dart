@@ -184,7 +184,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
           child: LoginTextfield(
             text: 'Enter points (e.g., 10)',
             fontsize: isLargeScreen ? 14.sp : 12.sp,
-            height: isLargeScreen ? 55.h : 50.h,
+          //  height: isLargeScreen ? 55.h : 50.h,
             controller: _pointsController,
             keyboardType: TextInputType.number,
           ),
@@ -203,7 +203,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
           LoginTextfield(
             text: 'Enter scenario context...',
             fontsize: isLargeScreen ? 14.sp : 12.sp,
-            height: isLargeScreen ? 90.h : 80.h,
+           // height: isLargeScreen ? 90.h : 80.h,
             controller: _scenarioController,
             maxLines: 3,
           ),
@@ -220,7 +220,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
         LoginTextfield(
           text: 'Enter your question...',
           fontsize: isLargeScreen ? 14.sp : 12.sp,
-          height: isLargeScreen ? 90.h : 80.h,
+          //height: isLargeScreen ? 90.h : 80.h,
           controller: _questionController,
           maxLines: 3,
         ),
@@ -297,7 +297,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
                     child: LoginTextfield(
                       text: 'Option ${index + 1}',
                       fontsize: isLargeScreen ? 14.sp : 12.sp,
-                      height: isLargeScreen ? 55.h : 50.h,
+                     // height: isLargeScreen ? 55.h : 50.h,
                       controller: controller,
                     ),
                   ),
@@ -364,7 +364,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
                     child: LoginTextfield(
                       text: 'Step ${index + 1}',
                       fontsize: isLargeScreen ? 14.sp : 12.sp,
-                      height: isLargeScreen ? 55.h : 50.h,
+                    //  height: isLargeScreen ? 55.h : 50.h,
                       controller: controller,
                     ),
                   ),

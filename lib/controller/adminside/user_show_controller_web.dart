@@ -27,7 +27,7 @@ class UserShowControllerWeb extends GetxController {
       final response = await http.get(Uri.parse(apiUrl));
 
       print("📥 Status: ${response.statusCode}");
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final List<dynamic> data = jsonDecode(response.body);
         allUsers.assignAll(data.map((e) => UserModel.fromJson(e)).toList());
         print("✅ Loaded ${allUsers.length} users");

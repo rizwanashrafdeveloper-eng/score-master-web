@@ -1,4 +1,4 @@
-
+// lib/components/facilitator_folder/feedback_container.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,54 +8,58 @@ import 'package:scorer_web/constants/appimages.dart';
 import 'package:scorer_web/widgets/bold_text.dart';
 import 'package:scorer_web/widgets/main_text.dart';
 
-
 class FeedbackContainer extends StatelessWidget {
   final bool ishow;
-  const FeedbackContainer({super.key, this.ishow = false});
+  final int? finalScore;
+  final String? feedback;
+
+  const FeedbackContainer({
+    super.key,
+    this.ishow = false,
+    this.finalScore,
+    this.feedback,
+  });
 
   @override
   Widget build(BuildContext context) {
-    
-   
-
     return Stack(
       clipBehavior: Clip.none,
       children: [
         Container(
-          height: 470.h, 
-          width:double.infinity ,
+          height: 470.h,
+          width: double.infinity,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(26.r ),
-            border: Border.all(color: AppColors.greyColor, width: 1.7 ),
+            borderRadius: BorderRadius.circular(26.r),
+            border: Border.all(color: AppColors.greyColor, width: 1.7),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 19 ),
+            padding: EdgeInsets.symmetric(horizontal: 19.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 100 .h),
+                SizedBox(height: 100.h),
                 BoldText(
-text: "AI Feedback".tr,
-                  fontSize: 32.sp ,
+                  text: "AI Feedback",
+                  fontSize: 32.sp,
                   selectionColor: AppColors.languageTextColor,
                 ),
-                SizedBox(height: 20.h,),
-             MainText(
-  text: """Excellent strategic thinking with a comprehensive digital transformation approach. The timeline is realistic and the  three-phase implementation shows strong project management skills. Great work on considering both technical and human aspects.""".tr,
-  fontSize: 28.sp ,
-  height: 1.3,
-),
+                SizedBox(height: 20.h),
+                MainText(
+                  text: feedback ??
+                      "Excellent strategic thinking with a comprehensive digital transformation approach. The timeline is realistic and the three-phase implementation shows strong project management skills. Great work on considering both technical and human aspects.",
+                  fontSize: 28.sp,
+                  height: 1.3,
+                ),
               ],
             ),
           ),
         ),
         Positioned(
-          top: -160.h ,
-          // left: 230.w ,
+          top: -160.h,
           left: 0,
           right: 0,
           child: Container(
-            height: 270.h , 
+            height: 270.h,
             width: 270.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -69,7 +73,7 @@ text: "AI Feedback".tr,
               ),
             ),
             child: Container(
-              margin: EdgeInsets.all(3 ),
+              margin: EdgeInsets.all(3.w),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: const Color.fromARGB(255, 202, 202, 202),
@@ -78,14 +82,14 @@ text: "AI Feedback".tr,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   BoldText(
-                    text: "89/100",
-                    fontSize: 37.sp ,
+                    text: "${finalScore ?? 89}/100",
+                    fontSize: 37.sp,
                     selectionColor: AppColors.createBorderColor,
                   ),
-                  SizedBox(height: 4 ),
+                  SizedBox(height: 4.h),
                   BoldText(
                     text: "final_score".tr,
-                    fontSize: 28.sp ,
+                    fontSize: 28.sp,
                     selectionColor: AppColors.blueColor,
                   )
                 ],
@@ -95,23 +99,23 @@ text: "AI Feedback".tr,
         ),
         if (ishow)
           Positioned(
-            top: -175 ,
-            left: 380.w ,
+            top: -175.h,
+            left: 380.w,
             child: SvgPicture.asset(
               Appimages.arrowdown,
-              height: 38 ,
-              width: 31 ,
+              height: 38.h,
+              width: 31.w,
             ),
           ),
         if (ishow)
           Positioned(
-            top: -170 ,
-            left: 110.w ,
+            top: -170.h,
+            left: 110.w,
             right: 110.w,
             child: Image.asset(
               Appimages.ai2,
-              height: 116 ,
-              width: 115 ,
+              height: 116.h,
+              width: 115.w,
             ),
           ),
       ],

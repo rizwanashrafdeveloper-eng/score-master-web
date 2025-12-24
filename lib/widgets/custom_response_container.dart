@@ -1,11 +1,8 @@
+// lib/widgets/custom_response_container.dart
 import 'package:flutter/material.dart';
-// Import the screenutil package for responsive extensions
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-// Removed ResponsiveFonts import as ScreenUtil handles this now
-// import 'package:scorer/components/responsive_fonts.dart'; 
-
 import 'package:scorer_web/constants/appcolors.dart';
 import 'package:scorer_web/constants/appimages.dart';
 import 'package:scorer_web/widgets/login_button.dart';
@@ -19,11 +16,23 @@ class CustomResponseContainer extends StatelessWidget {
   final String? text1;
   final String? image;
   final Color? textColor;
-  // Note: Using nullable doubles for flexibility, but they should ideally be based on scaled units if provided.
   final double? containerHeight;
   final double? containerWidth;
   final bool ishow1;
   final VoidCallback? onTap;
+
+  final String? playerName;
+  final String? questionText;
+  final String? answer;
+  final int? questionPoints;
+  final int? score;
+  final bool? isScored;
+  final VoidCallback? onEvaluateTap;
+  final VoidCallback? onViewScoreTap;
+  final bool? showEvaluate;
+  final bool? showViewScore;
+  final String? teamName;
+  final String? submittedTime;
 
   const CustomResponseContainer({
     super.key,
@@ -37,36 +46,53 @@ class CustomResponseContainer extends StatelessWidget {
     this.containerWidth,
     this.ishow1 = true,
     this.onTap,
+    this.playerName,
+    this.questionText,
+    this.answer,
+    this.questionPoints,
+    this.score,
+    this.isScored = false,
+    this.onEvaluateTap,
+    this.onViewScoreTap,
+    this.showEvaluate = false,
+    this.showViewScore = false,
+    this.teamName,
+    this.submittedTime,
   });
 
   @override
   Widget build(BuildContext context) {
-    // All manual MediaQuery and scale factor calculations are removed.
     bool isSpanish = Get.locale?.languageCode == 'es';
+
+    final bool isResponseScored = isScored ?? false;
+    final String buttonText = isResponseScored ? (text1 ?? "View Score") : (text1 ?? "Evaluate");
+    final String statusText = isResponseScored ? (text ?? "Scored") : (text ?? "Pending");
+    final Color statusColor = isResponseScored ? (color1 ?? AppColors.forwardColor) : (color1 ?? AppColors.yellowColor);
+    final Color buttonColor = isResponseScored ? AppColors.forwardColor : AppColors.greyColor;
+
+    final bool shouldShowEvaluate = showEvaluate ?? !isResponseScored;
+    final bool shouldShowViewScore = showViewScore ?? isResponseScored;
+    final VoidCallback? buttonAction = isResponseScored ? onViewScoreTap : onEvaluateTap;
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
         GestureDetector(
-          onTap: onTap,
+          onTap: onTap ?? buttonAction,
           child: Container(
-            // Converted: 226 * scaleHeight -> 226.h (scaled height)
             height: containerHeight ?? 300.h,
-            // Converted: 346 * scaleWidth -> 346.w (scaled width)
             width: containerWidth ?? double.infinity,
             decoration: BoxDecoration(
-              // Converted: 24 * scaleWidth -> 24.r (scaled radius)
               borderRadius: BorderRadius.circular(24.r),
-              // Converted: 1.7 * scaleWidth -> 1.7.w (scaled width for border)
               border: Border.all(color: AppColors.greyColor, width: 1.7.w),
             ),
             child: Padding(
-              // Converted: 17 * scaleWidth -> 17.w (scaled horizontal padding)
               padding: EdgeInsets.symmetric(horizontal: 36.w),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Converted: 16 * scaleHeight -> 16.h (scaled vertical spacing)
                   SizedBox(height: 16.h),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -74,25 +100,21 @@ class CustomResponseContainer extends StatelessWidget {
                         children: [
                           Image.asset(
                             Appimages.blackgirl,
-                            // Converted: 47 * scaleHeight -> 47.h
                             height: 60.h,
-                            // Converted: 35 * scaleWidth -> 35.w
                             width: 60.w,
                           ),
-                          // Converted: 3 * scaleWidth -> 3.w
-                          SizedBox(width: 3.w),
+                          SizedBox(width: 10.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               MainText(
-                                text: "Sarah Johnson",
-                                // Converted: 14 * scaleWidth -> 14.sp (scaled font size)
+                                text: playerName ?? "Sarah Johnson",
                                 fontSize: 24.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                               MainText(
-                                text: "Team Beta 3:42 PM",
+                                text: "${teamName ?? "Team Beta"} • ${submittedTime ?? "3:42 PM"}",
                                 color: AppColors.teamColor,
-                                // Converted: 13 * scaleWidth -> 13.sp
                                 fontSize: 20.sp,
                                 height: 1,
                               ),
@@ -104,96 +126,123 @@ class CustomResponseContainer extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           UseableContainer(
-                            text: text ?? "pending".tr,
-                            // fontSize: 17.sp,
-                            // Converted: 28 * scaleHeight -> 28.h
-                            // height: 28.h,
-                            // // Converted: 75 * scaleWidth -> 75.w
-                            // width: 75.w,
-                            color: color1 ?? AppColors.yellowColor,
-                            textColor: textColor ?? AppColors.languageTextColor,
-                            // Converted: 12 * scaleWidth -> 12.sp, conditionally 10.sp
-                            // fontSize: isSpanish ? 10.sp : 12.sp,
+                            text: statusText,
+                            color: statusColor,
+                            textColor: textColor ?? (isResponseScored ? Colors.white : AppColors.languageTextColor),
+                            fontSize: isSpanish ? 10.sp : 12.sp,
                           ),
-                          // Converted: 4 * scaleWidth -> 4.w
-                          SizedBox(width: 4.w),
-                          UseableContainer(
-                            text: "78",
-                            fontFamily: "giory",
-                            // Converted: 14 * scaleWidth -> 14.sp
-                            // fontSize: 14.sp,
-                            // Converted: 37 * scaleWidth -> 37.w
-                            width: 50.w,
-                            // Converted: 28 * scaleHeight -> 28.h
-                            height: 42.h,
-                            color: AppColors.orangeColor,
-                          )
+                          SizedBox(width: 8.w),
+                          if (score != null && isResponseScored)
+                            UseableContainer(
+                              text: "$score",
+                              fontFamily: "giory",
+                              fontSize: 16.sp,
+                              //width: 50.w,
+                            //  height: 42.h,
+                              color: AppColors.orangeColor,
+                              textColor: Colors.white,
+                            )
+                          else if (questionPoints != null)
+                            UseableContainer(
+                              text: "${questionPoints}P",
+                              fontFamily: "giory",
+                              fontSize: 16.sp,
+                              //width: 50.w,
+                             // height: 42.h,
+                              color: AppColors.greyColor,
+                              textColor: Colors.white,
+                            )
                         ],
                       )
                     ],
                   ),
-                  // Converted: 17 * scaleHeight -> 17.h
-                  SizedBox(height: 46.h),
+
+                  SizedBox(height: 20.h),
+
                   MainText(
-                    text: "Our primary objective is to increase customer satisfaction by 25% through Improved service delivery.",
-                    // Replaced custom ResponsiveFont with standard scaled font size (14.sp)
-                    fontSize: 28.sp, 
-                    height: 1.5.h,
+                    text: questionText ?? "Define your team's primary objective for the next quarter and identify three key strategies to achieve it.",
+                    fontSize: 22.sp,
+                    height: 1.4.h,
+                    color: AppColors.blueColor,
                   ),
+
+                  SizedBox(height: 15.h),
+
+                  if (answer != null && answer!.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MainText(
+                          text: "Answer:",
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.greyColor,
+                        ),
+                        SizedBox(height: 5.h),
+                        Container(
+                          padding: EdgeInsets.all(12.w),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(color: Colors.grey[200]!),
+                          ),
+                          child: MainText(
+                            text: answer!,
+                            fontSize: 20.sp,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                        SizedBox(height: 15.h),
+                      ],
+                    ),
+
                   const Spacer(),
-                  if (ishow1)
-                    LoginButton(
-                      // Converted: 14 * scaleWidth -> 14.sp
-                      fontSize: 27.sp,
-                      fontFamily: "refsan",
-                      // Converted: 17 * scaleHeight -> 17.h
-                      imageHeight: 25.h,
-                      // Converted: 18 * scaleWidth -> 18.w
-                      imageWidth: 25.w,
-                      text: text1?.tr ?? "evaluate".tr,
-                      // Converted: 45 * scaleHeight -> 45.h
-                      height: 70.h,
-                      // Converted: 300 * scaleWidth -> 300.w
-                      width: 300.w,
-                      // Converted: 12 * scaleWidth -> 12.r
-                      radius: 12.r,
-                      image: image ?? Appimages.star,
-                      ishow: true,
+
+                  if (ishow1 && (shouldShowEvaluate || shouldShowViewScore))
+                    Center(
+                      child: LoginButton(
+                        fontSize: 22.sp,
+                        fontFamily: "refsan",
+                        imageHeight: 25.h,
+                        imageWidth: 25.w,
+                        text: buttonText,
+                        height: 60.h,
+                        width: 250.w,
+                        radius: 12.r,
+                        image: image ?? (isResponseScored ? Appimages.eye : Appimages.star),
+                        ishow: true,
+                        color: buttonColor,
+                        onTap: buttonAction,
+                      ),
                     )
-                  else
+                  else if (ishow1)
                     const SizedBox.shrink(),
-                  // Converted: 20 * scaleHeight -> 20.h
+
                   SizedBox(height: 20.h),
                 ],
               ),
             ),
           ),
         ),
+
         if (ishow)
           Positioned(
-            // Converted: 70 * scaleHeight -> 70.h
             top: 70.h,
-            // Converted: 14 * scaleWidth -> 14.w
             right: 14.w,
             child: Image.asset(
               Appimages.ai2,
-              // Converted: 38 * scaleHeight -> 38.h
               height: 58.h,
-              // Converted: 38 * scaleWidth -> 38.w
               width: 58.w,
             ),
           ),
+
         if (ishow)
           Positioned(
-            // Converted: 60 * scaleHeight -> 60.h
             top: 60.h,
-            // Converted: -6 * scaleWidth -> -6.w
             right: -6.w,
             child: SvgPicture.asset(
               Appimages.arrowdown,
-              // Converted: 22 * scaleHeight -> 22.h
               height: 30.h,
-              // Converted: 20 * scaleWidth -> 20.w
               width: 30.w,
             ),
           ),

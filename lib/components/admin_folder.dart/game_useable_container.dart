@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:scorer_web/constants/appcolors.dart';
 import 'package:scorer_web/constants/appimages.dart';
 import 'package:scorer_web/widgets/main_text.dart';
@@ -88,26 +89,26 @@ class GameUseAbleContainer extends StatelessWidget {
                     children: [
                       UseableContainer(
                         fontSize: 18.sp,
-                        height: 50.h,
+                        //height: 50.h,
                         text: game.scoringTypeDisplay,
                         color: _getScoringTypeColor(game.scoringType),
-                        width: 120.w,
+                        //width: 120.w,
                       ),
                       SizedBox(width: 12.w),
                       UseableContainer(
                         fontSize: 18.sp,
                         text: game.statusText,
-                        height: 50.h,
+                        //height: 50.h,
                         color: game.isActive ? AppColors.forwardColor : Colors.grey,
-                        width: 120.w,
+                       // width: 120.w,
                       ),
                       SizedBox(width: 12.w),
                       UseableContainer(
                         fontSize: 18.sp,
                         text: game.modeDisplayText,
-                        height: 50.h,
+                       // height: 50.h,
                         color: game.mode == 'team' ? AppColors.blueColor : AppColors.orangeColor,
-                        width: 120.w,
+                        //width: 120.w,
                       ),
                     ],
                   ),
@@ -127,7 +128,7 @@ class GameUseAbleContainer extends StatelessWidget {
                           ),
                           SizedBox(width: 12.w),
                           MainText(
-                            text: "${game.totalPhases} Phases",
+                            text: "${game.totalPhases} " + "phases".tr,
                             fontSize: 24.sp,
                           ),
                         ],
@@ -175,10 +176,11 @@ class GameUseAbleContainer extends StatelessWidget {
       ),
     );
   }
-
-  /// Helper method to format the time duration from backend (assumes minutes)
+// Update the _formatTimeDuration method:
   String _formatTimeDuration(int durationInMinutes) {
-    final formatted = durationInMinutes <= 0 ? 'No time limit' : '${durationInMinutes} min';
+    final formatted = durationInMinutes <= 0
+        ? 'no_time_limit'.tr // ✅ Changed from 'No time limit'
+        : '${durationInMinutes} ' + 'minutes'.tr; // ✅ Changed from 'min'
     print("⏱️ Web - _formatTimeDuration DEBUG → Input: $durationInMinutes → Output: $formatted");
     return formatted;
   }

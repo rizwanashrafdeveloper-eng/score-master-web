@@ -1,60 +1,60 @@
-// import 'package:get/get.dart';
-// import 'package:scorer/api/api_models/player_leaderboard_model.dart';
-// import 'package:scorer/api/api_services/player_leaderboard_service.dart';
-//
-// import '../../shared_preferences/shared_preferences.dart';
-//
-// class PlayerLeaderboardController extends GetxController {
-//   final PlayerLeaderboardService _service = PlayerLeaderboardService();
-//
-//   var top3 = <PlayerRank>[].obs;
-//   var remaining = <PlayerRank>[].obs;
-//   var isLoading = false.obs;
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     _loadFromSharedPref();
-//   }
-//
-//   Future<void> _loadFromSharedPref() async {
-//     try {
-//       final prefs = await SharedPrefServices.getSessionId(); // your existing method
-//       final sessionId = prefs ?? 0;
-//
-//       if (sessionId > 0) {
-//         print("✅ [PlayerLeaderboardController] Using sessionId from SharedPref: $sessionId");
-//         await loadLeaderboard(sessionId);
-//       } else {
-//         print("⚠️ [PlayerLeaderboardController] No valid sessionId found in SharedPref.");
-//       }
-//     } catch (e) {
-//       print("❌ [PlayerLeaderboardController] Error loading sessionId from SharedPref: $e");
-//     }
-//   }
-//
-//
-//   Future<void> loadLeaderboard(int sessionId) async {
-//     print("🔹 [PlayerLeaderboardController] Loading leaderboard for sessionId: $sessionId");
-//
-//     try {
-//       isLoading.value = true;
-//       final data = await _service.fetchLeaderboard(sessionId);
-//
-//       if (data != null) {
-//         print("✅ [PlayerLeaderboardController] Leaderboard data received successfully.");
-//         print("   ├─ Top 3 Players Count: ${data.top3.length}");
-//         print("   └─ Remaining Players Count: ${data.remaining.length}");
-//
-//         top3.assignAll(data.top3);
-//         remaining.assignAll(data.remaining);
-//       } else {
-//         print("⚠️ [PlayerLeaderboardController] No data returned from service.");
-//       }
-//     } catch (e) {
-//       print("❌ [PlayerLeaderboardController] Error loading leaderboard: $e");
-//     } finally {
-//       isLoading.value = false;
-//       print("🔸 [PlayerLeaderboardController] Loading complete.");
-//     }
-//   }
-// }
+import 'package:get/get.dart';
+
+import '../../shared_preference/shared_preference.dart';
+import '../api_models/player_leaderboard_model.dart';
+import '../api_services/player_leaderboard_service.dart';
+
+class PlayerLeaderboardController extends GetxController {
+  final PlayerLeaderboardService _service = PlayerLeaderboardService();
+
+  var top3 = <PlayerRank>[].obs;
+  var remaining = <PlayerRank>[].obs;
+  var isLoading = false.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    _loadFromSharedPref();
+  }
+
+  Future<void> _loadFromSharedPref() async {
+    try {
+      final prefs = await SharedPrefServices.getSessionId(); // your existing method
+      final sessionId = prefs ?? 0;
+
+      if (sessionId > 0) {
+        print("✅ [PlayerLeaderboardController] Using sessionId from SharedPref: $sessionId");
+        await loadLeaderboard(sessionId);
+      } else {
+        print("⚠️ [PlayerLeaderboardController] No valid sessionId found in SharedPref.");
+      }
+    } catch (e) {
+      print("❌ [PlayerLeaderboardController] Error loading sessionId from SharedPref: $e");
+    }
+  }
+
+
+  Future<void> loadLeaderboard(int sessionId) async {
+    print("🔹 [PlayerLeaderboardController] Loading leaderboard for sessionId: $sessionId");
+
+    try {
+      isLoading.value = true;
+      final data = await _service.fetchLeaderboard(sessionId);
+
+      if (data != null) {
+        print("✅ [PlayerLeaderboardController] Leaderboard data received successfully.");
+        print("   ├─ Top 3 Players Count: ${data.top3.length}");
+        print("   └─ Remaining Players Count: ${data.remaining.length}");
+
+        top3.assignAll(data.top3);
+        remaining.assignAll(data.remaining);
+      } else {
+        print("⚠️ [PlayerLeaderboardController] No data returned from service.");
+      }
+    } catch (e) {
+      print("❌ [PlayerLeaderboardController] Error loading leaderboard: $e");
+    } finally {
+      isLoading.value = false;
+      print("🔸 [PlayerLeaderboardController] Loading complete.");
+    }
+  }
+}

@@ -66,13 +66,13 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                     children: [
                       Center(
                         child: BoldText(
-                          text: "Game Format Management",
+                          text: "game_format_management".tr,
                           fontSize: 48.sp,
                           selectionColor: AppColors.blueColor,
                         ),
                       ),
                       MainText(
-                        text: "Each of these formats has its own logic, flow,\nand evaluation methods.",
+                        text: "game_formats_description".tr,
                         fontSize: 22.sp,
                         textAlign: TextAlign.center,
                       ),
@@ -115,13 +115,13 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   BoldText(
-                                    text: "Games Management",
+                                    text: "games_management".tr,
                                     fontSize: 32.sp,
                                     selectionColor: AppColors.blueColor,
                                   ),
                                   SizedBox(height: 8.h),
                                   MainText(
-                                    text: "Manage and monitor all game formats and configurations.",
+                                    text: "manage_game_formats".tr,
                                     fontSize: 18.sp,
                                     height: 1.4,
                                   ),
@@ -157,7 +157,7 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                                   ),
                                   SizedBox(height: 8.h),
                                   Text(
-                                    "${gamesController.totalGames} Games",
+                                    "${gamesController.totalGames}"+ "games".tr,
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       color: Colors.grey,
@@ -178,7 +178,7 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                               setState(() {});
                             },
                             decoration: InputDecoration(
-                              hintText: "Search game by name...",
+                              hintText: "search_game_name".tr,
                               prefixIcon: Icon(Icons.search, color: Colors.grey),
                               filled: true,
                               fillColor: Colors.white,
@@ -210,7 +210,7 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                                       CircularProgressIndicator(color: AppColors.blueColor),
                                       SizedBox(height: 30.h),
                                       Text(
-                                        "Loading games...",
+                                        "loading_games".tr,
                                         style: TextStyle(
                                           fontSize: 24.sp,
                                           color: Colors.grey,
@@ -235,7 +235,7 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                                       ),
                                       SizedBox(height: 30.h),
                                       Text(
-                                        "Error loading games",
+                                        "error_loading_games".tr,
                                         style: TextStyle(
                                           fontSize: 28.sp,
                                           fontWeight: FontWeight.w600,
@@ -256,7 +256,7 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                                         onPressed: () => gamesController.refreshGames(),
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 15.h),
-                                          child: Text("Try Again", style: TextStyle(fontSize: 20.sp)),
+                                          child: Text(  "try_again".tr, style: TextStyle(fontSize: 20.sp)),
                                         ),
                                       ),
                                     ],
@@ -284,7 +284,7 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                                       ),
                                       SizedBox(height: 30.h),
                                       Text(
-                                        searchController.text.isEmpty ? "No games available" : "No games found",
+                                        searchController.text.isEmpty ? "no_games_available".tr : "no_games_found".tr,
                                         style: TextStyle(
                                           fontSize: 28.sp,
                                           fontWeight: FontWeight.w600,
@@ -294,8 +294,8 @@ class _GameScreenAdminsideState extends State<GameScreenAdminside> {
                                       SizedBox(height: 15.h),
                                       Text(
                                         searchController.text.isEmpty
-                                            ? "Create your first game to get started"
-                                            : "Try a different search term",
+                                            ? "create_first_game".tr // ✅ Changed from "Create your first game to get started"
+                                            : "try_different_search".tr, // ✅ Changed from "Try a different search term"
                                         style: TextStyle(
                                           fontSize: 20.sp,
                                           color: Colors.grey,

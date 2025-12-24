@@ -24,7 +24,7 @@ class FacilLoginScreen extends StatefulWidget {
 class _FacilLoginScreenState extends State<FacilLoginScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final loginController = Get.put(LoginControllerWeb());
+  final loginController = Get.put(AuthController());
 
   late AnimationController _imageController;
   late AnimationController _textController;
@@ -55,8 +55,6 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
         .animate(CurvedAnimation(parent: _textController, curve: Curves.easeOut));
 
     _imageController.forward().then((_) => _textController.forward());
-
-
   }
 
   @override
@@ -82,6 +80,7 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
                   child: ForwardButtonContainer(image: Appimages.arrowback),
                 ),
               ),
+
               Padding(
                 padding: EdgeInsets.only(left: 60.w, right: 159.w),
                 child: Center(
@@ -89,7 +88,7 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-// Animated left side (image)
+                      // Animated left side (image)
                       FadeTransition(
                         opacity: _imageOpacity,
                         child: SlideTransition(
@@ -103,10 +102,10 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
                                 height: 641.h,
                               ),
                               Positioned(
-                                right: -235,
-                                top: 130,
+                                right: -275.w,
+                                top: 130.h,
                                 child: CreateContainer(
-                                  text: "Facilitator Login",
+                                  text: "facilitator_login".tr,
                                   fontsize2: 30.sp,
                                 ),
                               ),
@@ -145,7 +144,6 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
                                       controller: loginController.passwordController,
                                       validator: Validators.password,
                                       isPassword: true,
-
                                     ),
                                     SizedBox(height: 20.h),
 
@@ -180,8 +178,8 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
                                                 ),
                                                 child: loginController
                                                     .rememberMe.value
-                                                    ? const Icon(Icons.check,
-                                                    size: 20,
+                                                    ? Icon(Icons.check,
+                                                    size: 20.sp,
                                                     color: Colors.white)
                                                     : null,
                                               ),
@@ -217,9 +215,9 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
                                     // Login Button
                                     Obx(() => LoginButton(
                                       text: loginController.isLoading.value
-                                          ? "Logging in..."
+                                          ? "logging_in".tr
                                           : "login".tr,
-                                      fontSize: 20,
+                                      fontSize: 20.sp,
                                       onTap: loginController.isLoading.value
                                           ? null
                                           : () {
@@ -255,7 +253,7 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
                     return Opacity(
                       opacity: clampedValue,
                       child: Transform.translate(
-                        offset: Offset(-50 * (1 - clampedValue), 0),
+                        offset: Offset(-50.w * (1 - clampedValue), 0),
                         child: child,
                       ),
                     );
@@ -272,11 +270,8 @@ class _FacilLoginScreenState extends State<FacilLoginScreen>
         ),
       ),
     );
-
-
   }
 }
-
 
 
 

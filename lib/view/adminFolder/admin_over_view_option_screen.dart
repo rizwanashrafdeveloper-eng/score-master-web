@@ -38,6 +38,11 @@ import 'package:scorer_web/widgets/main_text.dart';
 import 'package:scorer_web/widgets/players_containers.dart';
 import 'package:scorer_web/widgets/team_alpha_container.dart';
 import 'package:scorer_web/widgets/useable_container.dart';
+
+import '../../components/facilitator_folder/leader_board_Screen.dart';
+import '../../components/facilitator_folder/overview_screen.dart';
+import '../../components/facilitator_folder/phases_Screen.dart';
+import '../../components/facilitator_folder/players_Screen.dart';
 // import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class AdminOverViewOptionScreen extends StatelessWidget {
@@ -60,10 +65,10 @@ class AdminOverViewOptionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       final List<Widget> screens = [
-    AdminOverViewScreen(),
-    AdminPhaseScreen(),
-    AdminPlayerScreen(),
-    AdminLeaderboardScreen(onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer()), // 
+        OverviewScreen(),
+        PhasesScreen(),
+        PlayersScreen(),
+        LeaderBoardScreen(onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer()), //
   ];
 
     return Scaffold(

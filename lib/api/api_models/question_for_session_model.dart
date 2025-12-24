@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 class QuestionForSessionModel {
@@ -13,11 +14,11 @@ class QuestionForSessionModel {
 
   factory QuestionForSessionModel.fromJson(Map<String, dynamic> json) {
     return QuestionForSessionModel(
-      sessionId: json['sessionId'],
-      gameFormatId: json['gameFormatId'],
-      phases: (json['phases'] as List)
-          .map((e) => Phase.fromJson(e))
-          .toList(),
+      sessionId: json['sessionId'] ?? 0,
+      gameFormatId: json['gameFormatId'] ?? 0,
+      phases: (json['phases'] as List?)
+          ?.map((e) => Phase.fromJson(e))
+          .toList() ?? [],
     );
   }
 
@@ -65,22 +66,28 @@ class Phase {
 
   factory Phase.fromJson(Map<String, dynamic> json) {
     return Phase(
-      id: json['id'],
-      gameFormatId: json['gameFormatId'],
-      name: json['name'],
-      description: json['description'],
-      order: json['order'],
-      scoringType: json['scoringType'],
-      timeDuration: json['timeDuration'],
-      challengeTypes: List<String>.from(json['challengeTypes']),
-      difficulty: json['difficulty'],
-      badge: json['badge'],
-      requiredScore: json['requiredScore'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      questions: (json['questions'] as List)
-          .map((e) => Question.fromJson(e))
-          .toList(),
+      id: json['id'] ?? 0,
+      gameFormatId: json['gameFormatId'] ?? 0,
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      order: json['order'] ?? 0,
+      scoringType: json['scoringType'] ?? 'HYBRID',
+      timeDuration: json['timeDuration'] ?? 0,
+      challengeTypes: json['challengeTypes'] != null
+          ? List<String>.from(json['challengeTypes'])
+          : [],
+      difficulty: json['difficulty'] ?? 'EASY',
+      badge: json['badge'] ?? '',
+      requiredScore: json['requiredScore'] ?? 0,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : DateTime.now(),
+      questions: (json['questions'] as List?)
+          ?.map((e) => Question.fromJson(e))
+          .toList() ?? [],
     );
   }
 
@@ -110,7 +117,7 @@ class Question {
   final String type;
   final String scenario;
   final String questionText;
-  final ScoringRubric scoringRubric;
+  final dynamic scoringRubric; // Changed to dynamic because API sends object
   final int order;
   final int point;
   final List<String>? mcqOptions;
@@ -118,9 +125,6 @@ class Question {
   final List<int>? correctSequence;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final bool isSelected; // Added for UI state
-  final List<int>? selectedSequence; // Added for sequence question answers
-  final String? selectedOption; // Added for MCQ answers
 
   Question({
     required this.id,
@@ -136,29 +140,33 @@ class Question {
     this.correctSequence,
     required this.createdAt,
     required this.updatedAt,
-    this.isSelected = false, // Default to false
-    this.selectedSequence, // Nullable, no default
-    this.selectedOption, // Nullable, no default
   });
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
-      id: json['id'],
-      phaseId: json['phaseId'],
-      type: json['type'],
-      scenario: json['scenario'],
-      questionText: json['questionText'],
-      scoringRubric: ScoringRubric.fromJson(json['scoringRubric']),
-      order: json['order'],
-      point: json['point'],
-      mcqOptions: json['mcqOptions'] != null ? List<String>.from(json['mcqOptions']) : null,
-      sequenceOptions: json['sequenceOptions'] != null ? List<String>.from(json['sequenceOptions']) : null,
-      correctSequence: json['correctSequence'] != null ? List<int>.from(json['correctSequence']) : null,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      isSelected: json['isSelected'] ?? false,
-      selectedSequence: json['selectedSequence'] != null ? List<int>.from(json['selectedSequence']) : null,
-      selectedOption: json['selectedOption'],
+      id: json['id'] ?? 0,
+      phaseId: json['phaseId'] ?? 0,
+      type: json['type'] ?? 'MCQ',
+      scenario: json['scenario'] ?? '',
+      questionText: json['questionText'] ?? '',
+      scoringRubric: json['scoringRubric'], // Keep as is from API
+      order: json['order'] ?? 0,
+      point: json['point'] ?? 0,
+      mcqOptions: json['mcqOptions'] != null
+          ? List<String>.from(json['mcqOptions'])
+          : null,
+      sequenceOptions: json['sequenceOptions'] != null
+          ? List<String>.from(json['sequenceOptions'])
+          : null,
+      correctSequence: json['correctSequence'] != null
+          ? List<int>.from(json['correctSequence'])
+          : null,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : DateTime.now(),
     );
   }
 
@@ -169,7 +177,7 @@ class Question {
       'type': type,
       'scenario': scenario,
       'questionText': questionText,
-      'scoringRubric': scoringRubric.toJson(),
+      'scoringRubric': scoringRubric,
       'order': order,
       'point': point,
       'mcqOptions': mcqOptions,
@@ -177,38 +185,23 @@ class Question {
       'correctSequence': correctSequence,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
-      'isSelected': isSelected,
-      'selectedSequence': selectedSequence,
-      'selectedOption': selectedOption,
     };
   }
-}
 
-class ScoringRubric {
-  final int wrong;
-  final int correct;
-
-  ScoringRubric({required this.wrong, required this.correct});
-
-  factory ScoringRubric.fromJson(Map<String, dynamic> json) {
-    return ScoringRubric(
-      wrong: json['wrong'],
-      correct: json['correct'],
-    );
+  // Helper to get correct MCQ answer index
+  int? getCorrectMcqIndex() {
+    if (type.toUpperCase() == 'MCQ' && correctSequence != null && correctSequence!.isNotEmpty) {
+      return correctSequence!.first;
+    }
+    return null;
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'wrong': wrong,
-      'correct': correct,
-    };
+  // Helper to check if answer is correct for MCQ
+  bool isCorrectMcqAnswer(int selectedIndex) {
+    final correctIndex = getCorrectMcqIndex();
+    return correctIndex != null && correctIndex == selectedIndex;
   }
 }
-
-
-
-
-
 
 
 
@@ -333,6 +326,9 @@ class ScoringRubric {
 //   final List<int>? correctSequence;
 //   final DateTime createdAt;
 //   final DateTime updatedAt;
+//   final bool isSelected; // Added for UI state
+//   final List<int>? selectedSequence; // Added for sequence question answers
+//   final String? selectedOption; // Added for MCQ answers
 //
 //   Question({
 //     required this.id,
@@ -348,6 +344,9 @@ class ScoringRubric {
 //     this.correctSequence,
 //     required this.createdAt,
 //     required this.updatedAt,
+//     this.isSelected = false, // Default to false
+//     this.selectedSequence, // Nullable, no default
+//     this.selectedOption, // Nullable, no default
 //   });
 //
 //   factory Question.fromJson(Map<String, dynamic> json) {
@@ -365,6 +364,9 @@ class ScoringRubric {
 //       correctSequence: json['correctSequence'] != null ? List<int>.from(json['correctSequence']) : null,
 //       createdAt: DateTime.parse(json['createdAt']),
 //       updatedAt: DateTime.parse(json['updatedAt']),
+//       isSelected: json['isSelected'] ?? false,
+//       selectedSequence: json['selectedSequence'] != null ? List<int>.from(json['selectedSequence']) : null,
+//       selectedOption: json['selectedOption'],
 //     );
 //   }
 //
@@ -383,6 +385,9 @@ class ScoringRubric {
 //       'correctSequence': correctSequence,
 //       'createdAt': createdAt.toIso8601String(),
 //       'updatedAt': updatedAt.toIso8601String(),
+//       'isSelected': isSelected,
+//       'selectedSequence': selectedSequence,
+//       'selectedOption': selectedOption,
 //     };
 //   }
 // }
@@ -407,3 +412,6 @@ class ScoringRubric {
 //     };
 //   }
 // }
+
+
+
