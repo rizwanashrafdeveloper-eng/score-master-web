@@ -3,7 +3,7 @@ class RouteName {
   static const String settingsScreen = '/settings';
   static const String notificationScreen = '/notifications';
   static const String editProfileScreen = '/edit-profile';
-
+static const String playerRegistrationScreen='/PlayerRegistrationScreen';
   static const String splashScreen= '/SplashScreen';
   static const String startScreen= '/StartScreen';
   static const String startScreen1= '/StartScreen1';

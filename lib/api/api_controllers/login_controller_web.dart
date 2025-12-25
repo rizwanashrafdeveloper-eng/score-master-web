@@ -88,10 +88,10 @@ class AuthController extends GetxController {
           return;
         }
 
-        // ✅ CREATE USER OBJECT - Same as mobile
+        // ✅ CREATE USER OBJECT
         final loginResponse = LoginResponse.fromJson(data);
-        user.value = loginResponse.user; // ✅ SET USER OBSERVABLE
-        token.value = authToken; // ✅ SET TOKEN OBSERVABLE
+        user.value = loginResponse.user;
+        token.value = authToken;
 
         print('👤 [WebLogin] User role: ${user.value?.role}');
         print('🎫 [WebLogin] Token: $authToken');
@@ -105,35 +105,43 @@ class AuthController extends GetxController {
           return;
         }
 
+        // ✅ SAVE ALL USER DATA
         await SharedPrefServices.setAuthToken(authToken);
         await SharedPrefServices.saveUserId(user.value!.id.toString());
         await SharedPrefServices.setUserRole(user.value!.role);
         await SharedPrefServices.setUserName(user.value!.name);
 
-        // ✅ CRITICAL FIX: Save facilitator ID when role is facilitator
+        // ✅ SAVE EMAIL AND PHONE
+        if (user.value!.email != null && user.value!.email.isNotEmpty) {
+          await SharedPrefServices.saveUserEmail(user.value!.email);
+        }
+        if (user.value!.phone != null && user.value!.phone.isNotEmpty) {
+          await SharedPrefServices.saveUserPhone(user.value!.phone);
+        }
+
+        // ✅ SAVE ROLE-SPECIFIC IDs
         if (user.value!.role == 'facilitator') {
           await SharedPrefServices.saveFacilitatorId(user.value!.id);
           print('💾 [WebLogin] Saved facilitator ID: ${user.value!.id}');
         }
 
-        // Also save admin ID if needed
         if (user.value!.role == 'admin') {
           await SharedPrefServices.saveUserId(user.value!.id.toString());
-          print(' [WebLogin] Saved admin ID: ${user.value!.id}');
+          print('💾 [WebLogin] Saved admin ID: ${user.value!.id}');
         }
 
-        //  Also save admin ID if needed
         if (user.value!.role == 'player') {
           await SharedPrefServices.savePlayerId(user.value!.id.toString());
-          print(' [WebLogin] Saved player ID: ${user.value!.id}');
+          print('💾 [WebLogin] Saved player ID: ${user.value!.id}');
         }
 
         if (rememberMe.value) {
           await SharedPrefServices.saveUserProfile(userData);
-          print(' [WebLogin] User profile saved (Remember Me).');
+          print('💾 [WebLogin] User profile saved (Remember Me).');
         }
 
         print('➡ [WebLogin] Navigating to dashboard for role: ${user.value!.role}');
+
 
         switch (user.value!.role) {
           case 'admin':

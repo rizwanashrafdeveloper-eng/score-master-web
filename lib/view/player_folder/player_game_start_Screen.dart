@@ -76,6 +76,7 @@ class _PlayerGameStartScreenState extends State<PlayerGameStartScreen> {
     }
   }
 
+  // Replace the error handling section in _loadInitialData() method:
   Future<void> _loadInitialData() async {
     final teamController = Get.find<TeamViewController>();
     final questionController = Get.find<QuestionForSessionsController>();
@@ -111,15 +112,55 @@ class _PlayerGameStartScreenState extends State<PlayerGameStartScreen> {
       }
     } catch (e) {
       print("❌ Error loading initial data: $e");
-      Get.snackbar(
-        'Load Error',
-        'Failed to load data: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+      // Error is already handled in the controller
     }
   }
+
+
+  // Future<void> _loadInitialData() async {
+  //   final teamController = Get.find<TeamViewController>();
+  //   final questionController = Get.find<QuestionForSessionsController>();
+  //
+  //   try {
+  //     // Load teams first
+  //     if (teamController.teamView.value == null) {
+  //       await teamController.loadTeams();
+  //     }
+  //
+  //     // Get real IDs from SharedPreferences or TeamView
+  //     int sessionId = await SharedPrefServices.getSessionId() ?? 25;
+  //     int gameFormatId = await SharedPrefServices.getGameId() ?? 72;
+  //
+  //     // If not in SharedPreferences, try to get from TeamView
+  //     if (teamController.teamView.value != null) {
+  //       sessionId = teamController.teamView.value!.sessionId;
+  //       gameFormatId = teamController.teamView.value!.gameFormat.id;
+  //
+  //       // Save them for future use
+  //       await SharedPrefServices.saveSessionId(sessionId);
+  //       await SharedPrefServices.saveGameId(gameFormatId);
+  //     }
+  //
+  //     print("🔍 Loading questions with sessionId: $sessionId, gameFormatId: $gameFormatId");
+  //
+  //     // Load questions with real IDs
+  //     if (questionController.questionData.value == null) {
+  //       await questionController.loadQuestions(
+  //         sessionId: sessionId,
+  //         gameFormatId: gameFormatId,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print("❌ Error loading initial data: $e");
+  //     Get.snackbar(
+  //       'Load Error',
+  //       'Failed to load data: $e',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.orange,
+  //       colorText: Colors.white,
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -287,51 +328,161 @@ class _PlayerGameStartScreenState extends State<PlayerGameStartScreen> {
                                   SizedBox(height: 30.h),
 
                                   // Error Message if questions failed to load
+                                  // Error Message Display
                                   Obx(() {
                                     if (questionController.errorMessage.isNotEmpty) {
+                                      final errorType = questionController.errorType.value;
+                                      final isSessionIssue = errorType == 'not_active' || errorType == 'paused';
+
+                                      Color errorColor = Colors.red;
+                                      IconData errorIcon = Icons.error_outline;
+                                      String errorTitle = 'failed_to_load_questions'.tr;
+                                      String errorDescription = questionController.errorMessage.value;
+                                      bool showRetry = true;
+
+                                      // Customize based on error type
+                                      if (errorType == 'not_active') {
+                                        errorColor = Colors.orange;
+                                        errorIcon = Icons.schedule;
+                                        errorTitle = 'session_not_active'.tr;
+                                        errorDescription = 'session_not_active_message'.tr;
+                                        showRetry = false; // No retry button for inactive sessions
+                                      } else if (errorType == 'paused') {
+                                        errorColor = Colors.orange;
+                                        errorIcon = Icons.pause_circle_outline;
+                                        errorTitle = 'session_paused_title'.tr;
+                                        errorDescription = 'session_paused_message'.tr;
+                                        showRetry = true;
+                                      }
+
                                       return Container(
-                                        padding: EdgeInsets.all(16.w),
+                                        padding: EdgeInsets.all(24.w),
                                         margin: EdgeInsets.only(bottom: 20.h),
                                         decoration: BoxDecoration(
-                                          color: Colors.red.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(12.r),
-                                          border: Border.all(color: Colors.red),
+                                          color: errorColor.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(20.r),
+                                          border: Border.all(
+                                            color: errorColor,
+                                            width: 2.w,
+                                          ),
                                         ),
                                         child: Column(
                                           children: [
-                                            Icon(Icons.error_outline, color: Colors.red, size: 40.w),
-                                            SizedBox(height: 10.h),
-                                            Text(
-                                              "Failed to load questions",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                            Icon(
+                                              errorIcon,
+                                              color: errorColor,
+                                              size: 56.w,
                                             ),
-                                            SizedBox(height: 5.h),
+                                            SizedBox(height: 16.h),
                                             Text(
-                                              questionController.errorMessage.value,
+                                              errorTitle,
                                               style: TextStyle(
-                                                color: Colors.red.shade700,
-                                                fontSize: 14.sp,
+                                                color: errorColor,
+                                                fontSize: 22.sp,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
-                                            SizedBox(height: 10.h),
-                                            ElevatedButton(
-                                              onPressed: () => _loadInitialData(),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red,
+                                            SizedBox(height: 12.h),
+                                            Text(
+                                              errorDescription,
+                                              style: TextStyle(
+                                                color: errorColor,
+                                                fontSize: 16.sp,
+                                                height: 1.4,
                                               ),
-                                              child: Text("Retry"),
+                                              textAlign: TextAlign.center,
                                             ),
+                                            if (!isSessionIssue) ...[
+                                              SizedBox(height: 8.h),
+                                              Text(
+                                                'contact_facilitator'.tr,
+                                                style: TextStyle(
+                                                  color: errorColor,
+                                                  fontSize: 14.sp,
+                                                  fontStyle: FontStyle.italic,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                            if (showRetry) ...[
+                                              SizedBox(height: 20.h),
+                                              ElevatedButton.icon(
+                                                onPressed: () => _loadInitialData(),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: errorColor,
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 32.w,
+                                                    vertical: 14.h,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(12.r),
+                                                  ),
+                                                ),
+                                                icon: Icon(Icons.refresh, size: 22.w, color: Colors.white),
+                                                label: Text(
+                                                  'retry'.tr,
+                                                  style: TextStyle(
+                                                    fontSize: 16.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ],
                                         ),
                                       );
                                     }
                                     return SizedBox.shrink();
                                   }),
+
+                                  // // Error Message if questions failed to load
+                                  // Obx(() {
+                                  //   if (questionController.errorMessage.isNotEmpty) {
+                                  //     return Container(
+                                  //       padding: EdgeInsets.all(16.w),
+                                  //       margin: EdgeInsets.only(bottom: 20.h),
+                                  //       decoration: BoxDecoration(
+                                  //         color: Colors.red.withOpacity(0.1),
+                                  //         borderRadius: BorderRadius.circular(12.r),
+                                  //         border: Border.all(color: Colors.red),
+                                  //       ),
+                                  //       child: Column(
+                                  //         children: [
+                                  //           Icon(Icons.error_outline, color: Colors.red, size: 40.w),
+                                  //           SizedBox(height: 10.h),
+                                  //           Text(
+                                  //             "Failed to load questions",
+                                  //             style: TextStyle(
+                                  //               color: Colors.red,
+                                  //               fontSize: 16.sp,
+                                  //               fontWeight: FontWeight.bold,
+                                  //             ),
+                                  //           ),
+                                  //           SizedBox(height: 5.h),
+                                  //           Text(
+                                  //             questionController.errorMessage.value,
+                                  //             style: TextStyle(
+                                  //               color: Colors.red.shade700,
+                                  //               fontSize: 14.sp,
+                                  //             ),
+                                  //             textAlign: TextAlign.center,
+                                  //           ),
+                                  //           SizedBox(height: 10.h),
+                                  //           ElevatedButton(
+                                  //             onPressed: () => _loadInitialData(),
+                                  //             style: ElevatedButton.styleFrom(
+                                  //               backgroundColor: Colors.red,
+                                  //             ),
+                                  //             child: Text("Retry"),
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //     );
+                                  //   }
+                                  //   return SizedBox.shrink();
+                                  // }),
 
                                   // Current Phase Container
                                   _buildCurrentPhaseContainer(questionController),
@@ -373,10 +524,9 @@ class _PlayerGameStartScreenState extends State<PlayerGameStartScreen> {
 
                                         SizedBox(height: 20.h),
 
-                                        // Review AI Score
                                         LoginButton(
-                                          onTap: () => Get.toNamed(RouteName.submitResponseScreen),
-                                          fontSize: 20.sp,
+                                          onTap: () => Get.toNamed(RouteName.submitResponseScreen2),
+                                          fontSize: 20,
                                           text: "review_ai_score".tr,
                                           color: AppColors.forwardColor,
                                           ishow: true,
@@ -384,6 +534,7 @@ class _PlayerGameStartScreenState extends State<PlayerGameStartScreen> {
                                           imageHeight: 32.h,
                                           imageWidth: 32.w,
                                         ),
+                                        SizedBox(height: 40.h),
                                       ],
                                     ),
                                   ),

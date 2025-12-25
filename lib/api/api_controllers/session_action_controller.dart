@@ -189,52 +189,52 @@ class SessionActionController extends GetxController {
   }
 
 
-  // Add this method to fetch phases for active sessions
-  Future<void> fetchPhasesForSession(int sessionId) async {
-    try {
-      final url = ApiEndpoints.getPhaseSessionUrl(sessionId);
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-
-        // Extract current phase ID from response
-        if (data['currentPhase']?['id'] != null) {
-          currentPhaseId.value = data['currentPhase']['id'];
-        } else if (data['currentPhaseId'] != null) {
-          currentPhaseId.value = data['currentPhaseId'];
-        }
-
-        // Extract phases list
-        List<dynamic> phasesList = [];
-        if (data['gameFormat']?['phases'] != null) {
-          phasesList = data['gameFormat']['phases'];
-        } else if (data['phases'] != null) {
-          phasesList = data['phases'];
-        }
-
-        final formatted = phasesList
-            .map((p) => {
-          'phaseId': p['id'],
-          'name': p['name'],
-          'order': p['order'],
-          'description': p['description'],
-          'isCurrent': (currentPhaseId.value == p['id']), // Mark current phase
-        })
-            .where((p) => p['phaseId'] != null)
-            .toList()
-          ..sort((a, b) => (a['order'] ?? 0).compareTo(b['order'] ?? 0));
-
-        phases.assignAll(formatted);
-        print("✅ Loaded ${phases.length} phases for session $sessionId");
-      }
-    } catch (e) {
-      print("Error fetching phases for session $sessionId: $e");
-    }
-  }
+  // // Add this method to fetch phases for active sessions
+  // Future<void> fetchPhasesForSession(int sessionId) async {
+  //   try {
+  //     final url = ApiEndpoints.getPhaseSessionUrl(sessionId);
+  //     final response = await http.get(
+  //       Uri.parse(url),
+  //       headers: {'Content-Type': 'application/json'},
+  //     );
+  //
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final data = jsonDecode(response.body);
+  //
+  //       // Extract current phase ID from response
+  //       if (data['currentPhase']?['id'] != null) {
+  //         currentPhaseId.value = data['currentPhase']['id'];
+  //       } else if (data['currentPhaseId'] != null) {
+  //         currentPhaseId.value = data['currentPhaseId'];
+  //       }
+  //
+  //       // Extract phases list
+  //       List<dynamic> phasesList = [];
+  //       if (data['gameFormat']?['phases'] != null) {
+  //         phasesList = data['gameFormat']['phases'];
+  //       } else if (data['phases'] != null) {
+  //         phasesList = data['phases'];
+  //       }
+  //
+  //       final formatted = phasesList
+  //           .map((p) => {
+  //         'phaseId': p['id'],
+  //         'name': p['name'],
+  //         'order': p['order'],
+  //         'description': p['description'],
+  //         'isCurrent': (currentPhaseId.value == p['id']), // Mark current phase
+  //       })
+  //           .where((p) => p['phaseId'] != null)
+  //           .toList()
+  //         ..sort((a, b) => (a['order'] ?? 0).compareTo(b['order'] ?? 0));
+  //
+  //       phases.assignAll(formatted);
+  //       print("✅ Loaded ${phases.length} phases for session $sessionId");
+  //     }
+  //   } catch (e) {
+  //     print("Error fetching phases for session $sessionId: $e");
+  //   }
+  // }
 
   /// ✅ Helper to fetch phases
   Future<void> _fetchPhases(int sessionId) async {

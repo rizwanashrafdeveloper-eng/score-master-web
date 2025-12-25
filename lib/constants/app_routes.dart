@@ -39,11 +39,12 @@ import 'package:scorer_web/view/start_screen2.dart';
 import '../view/FacilitatorFolder/vew_responses_screen.dart';
 import '../view/edit_profile_screen_web.dart';
 import '../view/notification_screen_web.dart';
+import '../view/player_folder/player_registration_screen.dart';
 import '../view/settings_screen_web.dart';
 
 class AppRoutes {
   static getAppRoutes() => [
-
+GetPage(name: RouteName.playerRegistrationScreen, page: () => PlayerRegistrationScreen()),
     GetPage(
       name: RouteName.settingsScreen,
       page: () => SettingsScreenWeb(),

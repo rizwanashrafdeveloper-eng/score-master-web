@@ -13,6 +13,7 @@ import 'package:scorer_web/widgets/login_button.dart';
 import 'package:scorer_web/widgets/login_textfield.dart';
 import 'package:scorer_web/widgets/main_text.dart';
 import '../api/api_controllers/login_controller_web.dart';
+import '../constants/route_name.dart';
 
 class PlayerLoginScreen extends StatefulWidget {
   const PlayerLoginScreen({super.key});
@@ -254,6 +255,39 @@ class _PlayerLoginScreenState extends State<PlayerLoginScreen>
                                         }
                                       },
                                     )),
+
+
+                                    SizedBox(height: 20.h),
+                                    Center(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed(RouteName.playerRegistrationScreen);
+                                        },
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: "dont_have_account".tr + " ", // Translation key
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: "signup".tr, // Translation key
+                                                style: TextStyle(
+                                                  color: AppColors.forwardColor, // green
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
                                   ],
                                 ),
                               ),

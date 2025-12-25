@@ -1,6 +1,0 @@
-﻿{
-  "buildCommand": "bash -c 'export PATH=\"/vercel/.local/share/flutter/bin:\\" && flutter build web --release'",
-  "installCommand": "bash -c 'if [ ! -d /vercel/.local/share/flutter ]; then git clone https://github.com/flutter/flutter.git -b stable --depth 1 /vercel/.local/share/flutter; fi && /vercel/.local/share/flutter/bin/flutter --version && /vercel/.local/share/flutter/bin/flutter pub get'",
-  "outputDirectory": "build/web",
-  "framework": null
-}

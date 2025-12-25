@@ -6,7 +6,37 @@ class SharedPrefServices {
   static final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 // Add to your SharedPrefServices class:
 // Add these methods to your existing SharedPrefServices class:
+// Phone Number methods
+  static Future<String?> getUserPhone() async {
+    final prefs = await _prefs;
+    return prefs.getString('userPhone');
+  }
 
+  static Future<void> saveUserPhone(String phone) async {
+    final prefs = await _prefs;
+    await prefs.setString('userPhone', phone);
+    print('💾 Saved phone: $phone');
+  }
+
+// Update the saveUserProfile method to also save email and phone
+  static Future<void> saveUserProfile(Map<String, dynamic> user) async {
+    final prefs = await _prefs;
+
+    await prefs.setString('userProfile', jsonEncode(user));
+
+    // Also save individual fields for easy access
+    if (user['email'] != null) {
+      await saveUserEmail(user['email']);
+    }
+    if (user['phone'] != null) {
+      await saveUserPhone(user['phone']);
+    }
+    if (user['name'] != null) {
+      await saveUserName(user['name']);
+    }
+
+    print('💾 Saved complete user profile');
+  }
 // User Name methods (you have setUserName already, add getUserName)
   static Future<String?> getUserName() async {
     final prefs = await _prefs;
@@ -104,12 +134,12 @@ class SharedPrefServices {
     return prefs.getString('auth_token');
   }
 
-  // ✅ Save user profile (as JSON)
-  static Future<void> saveUserProfile(Map<String, dynamic> user) async {
-    final prefs = await _prefs;
-
-    await prefs.setString('userProfile', jsonEncode(user));
-  }
+  // // ✅ Save user profile (as JSON)
+  // static Future<void> saveUserProfile(Map<String, dynamic> user) async {
+  //   final prefs = await _prefs;
+  //
+  //   await prefs.setString('userProfile', jsonEncode(user));
+  // }
 
   // ✅ Get user profile
   static Future<Map<String, dynamic>?> getUserProfile() async {
@@ -393,7 +423,6 @@ class SharedPrefServices {
     log('[SharedPref] Cleared teamId');
   }
 
-  // === Clear All Data ===
   static Future<void> clearUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_keyUserId);
@@ -407,6 +436,10 @@ class SharedPrefServices {
     await prefs.remove('playerId');
     await prefs.remove('joinCode');
     await prefs.remove(_keyFacilitatorId);
-    log('[SharedPref] Cleared all user data');
+    await prefs.remove('userEmail');
+    await prefs.remove('userPhone');
+    await prefs.remove('languageCode');
+    await prefs.remove('countryCode');
+    log('🧹 [SharedPref] Cleared all user data');
   }
 }

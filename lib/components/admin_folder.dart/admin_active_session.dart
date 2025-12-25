@@ -73,9 +73,9 @@ class AdminActiveSession extends StatelessWidget {
                       final shouldFetchPhases = sessionController.phases.isEmpty ||
                           (sessionController.currentSession.value?.id != sessionId);
 
-                      if (shouldFetchPhases) {
-                        sessionController.fetchPhasesForSession(sessionId);
-                      }
+                      // if (shouldFetchPhases) {
+                      //   sessionController.fetchPhasesForSession(sessionId);
+                      // }
                     }
                   });
 

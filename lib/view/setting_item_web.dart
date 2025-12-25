@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:scorer_web/constants/appcolors.dart';
@@ -25,16 +24,19 @@ class SettingItemWeb extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        height: 200.h,
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+        constraints: BoxConstraints(
+          minHeight: 90.h,
+          maxHeight: 120.h,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: AppColors.greyColor, width: 1.5.w),
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(color: AppColors.greyColor, width: 1.2.w),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 6,
               offset: Offset(0, 2),
             ),
           ],
@@ -42,20 +44,19 @@ class SettingItemWeb extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 90.w,
-              height: 90.h,
-              padding: EdgeInsets.all(16.w),
+              width: 60.w,
+              height: 60.h,
               decoration: BoxDecoration(
-                color: AppColors.forwardColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(15.r),
+                color: AppColors.forwardColor.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(14.r),
               ),
               child: Icon(
                 icon,
                 color: AppColors.forwardColor,
-                size: 36.sp,
+                size: 30.sp,
               ),
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: 16.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,20 +65,22 @@ class SettingItemWeb extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 24.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
                     ),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  SizedBox(height: 6.h),
+                  SizedBox(height: 4.h),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 20.sp,
+                      fontSize: 16.sp,
                       color: AppColors.teamColor,
                     ),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ],
               ),
@@ -87,7 +90,7 @@ class SettingItemWeb extends StatelessWidget {
               Icon(
                 Icons.chevron_right,
                 color: AppColors.greyColor,
-                size: 36.sp,
+                size: 30.sp,
               ),
           ],
         ),
