@@ -1,0 +1,21 @@
+﻿# Don't upload source code to Vercel
+lib/
+android/
+ios/
+linux/
+macos/
+windows/
+test/
+.dart_tool/
+.idea/
+.vscode/
+*.dart
+*.yaml
+*.md
+.gitignore
+.metadata
+analysis_options.yaml
+pubspec.lock
+pubspec.yaml
+README.md
+.git/

@@ -241,6 +241,7 @@ class _SettingsScreenWebState extends State<SettingsScreenWeb> {
                                     image: Appimages.arrowback,
                                   ),
                                 ),
+
                                 Positioned(
                                   top: -100.h,
                                   right: 312.w,
